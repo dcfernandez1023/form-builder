@@ -1,9 +1,26 @@
 import { User } from "../User";
 import { Auth } from "../Auth";
+var assert = require('assert');
 
+
+// let email: string = "test@gmail.com";
+// let password: string = "test123";
+// let firstName: string = "Dom";
+// let lastName: string = "Fernandez";
+//
+//
+// describe("Creating and Registering a User", async () => {
+//   describe("#User.createNew()", async () => {
+//     it("Should create a new user and credentials in the database without error.", async () => {
+//       let newUser = await User.createNew(email, password, firstName, lastName);
+//       let id: string = newUser.id;
+//       assert(id !== undefined && id !== null);
+//     });
+//   });
+// });
 
 const main = async () => {
-  let email: string = "test@gmail.com";
+  let email: string = "test123@gmail.com";
   let password: string = "test123";
   let firstName: string = "Dom";
   let lastName: string = "Fernandez";
@@ -16,15 +33,15 @@ const main = async () => {
   console.log(newUser);
   console.log(line);
 
-  let user = new User(id);
+  let user = new User();
   let auth = new Auth();
 
   console.log("Updating user");
-  console.log(await user.updateFields(id, {email: "dom22c@gmail.com", firstName: "Dominic"}));
+  console.log(await user.updateFields(id, {id: "123", email: "dom22c@gmail.com", firstName: "Dominic"}));
   console.log(line);
 
   console.log("Getting user");
-  console.log(await user.toJson());
+  console.log(await user.toJson(id));
   console.log(line);
 
   console.log("Failed login");

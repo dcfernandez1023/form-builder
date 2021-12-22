@@ -25,8 +25,8 @@ class User {
     "dateCreated"
   ]
 
-  constructor(id: string) {
-    this.id = id;
+  constructor() {
+    this.id = "";
     this.email = "";
     this.firstName = "";
     this.lastName = "";
@@ -72,15 +72,26 @@ class User {
     });
   }
 
-  async toJson(): Promise<json> {
-    let res: json = {};
-    let user: json = await this.getUserInfo(this.id);
+  async getUserByEmail(email: string): Promise<json> {
+    let userData: json[] = await new CloudFirestore().getByFilter("users", "email", "==", email);
+    if(userData.length != 1) {
+      return {};
+    }
+    return userData[0];
+  }
+
+  async toJson(id: string): Promise<json> {
+    let user: json = await this.getUserInfo(id);
     return user;
   }
 
   private validateFields(fields: json): boolean {
     for(var key in fields) {
-      if(!this.hasOwnProperty(key) || typeof (this as json)[key] !== typeof fields[key] || this.protectedFields.includes(key)) {
+      if(this.protectedFields.includes(key)) {
+        delete fields[key];
+        continue;
+      }
+      if(!this.hasOwnProperty(key) || typeof (this as json)[key] !== typeof fields[key]) {
         return false;
       }
     }
@@ -91,7 +102,7 @@ class User {
     let cf: CloudFirestore = new CloudFirestore();
     let userData: json[] = await cf.getByFilter("users", "id", "==", id);
     if(userData.length != 1) {
-      throw new UserDoesNotExistError();
+      return {};
     }
     return userData[0];
   }

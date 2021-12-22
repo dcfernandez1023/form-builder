@@ -12,15 +12,16 @@ require("dotenv").config();
 
 
 class Auth {
-  async register(userId: string, email: string, password: string) {
-    let cf = new CloudFirestore();
+  async register(userId: string, email: string, password: string): Promise<string> {
+    let cf: CloudFirestore = new CloudFirestore();
     const hashedPassword: string = await bcrypt.hash(password, 10);
     const userCredentials = {id: userId, email: email, password: hashedPassword};
     cf.insert(userId, "credentials", userCredentials);
+    return this.generateAccessToken({id: userCredentials.id});
   }
 
   async login(email: string, password: string): Promise<string> {
-    let cf = new CloudFirestore();
+    let cf: CloudFirestore = new CloudFirestore();
     let userCredentials: json[] = await cf.getByFilter("credentials", "email", "==", email);
     if(userCredentials.length != 1) {
       throw new UserDoesNotExistError();
@@ -28,11 +29,11 @@ class Auth {
     if(!await bcrypt.compare(password, userCredentials[0].password)) {
       throw new EmailOrPasswordInvalidError();
     }
-    return this.generateAccessToken(userCredentials[0]);
+    return this.generateAccessToken({id: userCredentials[0].id});
   }
 
   async sendForgotPasswordEmail(email: string) {
-    let cf = new CloudFirestore();
+    let cf: CloudFirestore = new CloudFirestore();
     let userCredentials: json[] = await cf.getByFilter("credentials", "email", "==", email);
     if(userCredentials.length != 1) {
       throw new UserDoesNotExistError();
@@ -51,12 +52,21 @@ class Auth {
     if(!this.validateAccessToken(accessToken)) {
       throw new TokenInvalidError();
     }
-    let cf = new CloudFirestore();
-    let userCredentials: json[] = await cf.getByFilter("credentials", "id", "==", userId);
+    return this.generateAccessToken({id: userId});
+  }
+
+  async resetPassword(email: string, newPassword: string, token: string) {
+    let cf: CloudFirestore = new CloudFirestore();
+    let userCredentials: json[] = await cf.getByFilter("credentials", "email", "==", email);
     if(userCredentials.length != 1) {
       throw new UserDoesNotExistError();
     }
-    return this.generateAccessToken(userCredentials[0]);
+    if(!this.validateAccessToken(token)) {
+      throw new TokenInvalidError();
+    }
+    const hashedPassword: string = await bcrypt.hash(newPassword, 10);
+    const updateData = {password: hashedPassword};
+    cf.update(userCredentials[0].id, "credentials", updateData);
   }
 
   validateAccessToken(accessToken: string): boolean {
