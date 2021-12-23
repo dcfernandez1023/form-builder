@@ -1,6 +1,7 @@
 import { Form } from "../Form";
 import { User } from "../User";
 import { json } from "../Json";
+import * as FormElements from "../formElements";
 
 
 const main = async () => {
@@ -45,6 +46,86 @@ const main = async () => {
   }
   catch(error) {
     console.log(error);
+  }
+  console.log(line);
+
+  console.log("Test inserting valid elements");
+  try {
+    let validElements: json[] = [
+      {id: "", type: "INPUT", name: "Input0", label: "Test", required: true, placeholder: "Enter your name", columns: 12},
+      FormElements.elements.RADIO,
+      FormElements.elements.SELECT,
+      FormElements.elements.TEXTAREA
+    ];
+    formJson.elements = validElements;
+    console.log(await form.updateFields(formJson.id, formJson));
+  }
+  catch(error: any) {
+    console.log(error.message);
+  }
+  console.log(line);
+
+  console.log("Test inserting invalid elements");
+  try {
+    formJson.elements = [];
+    await form.updateFields(formJson.id, formJson);
+    let invalidElements: json[] = [
+      {id: "", type: "not valid type", name: "Input0", label: "Test", required: true, placeholder: "Enter your name", columns: 12},
+      FormElements.elements.RADIO,
+      FormElements.elements.SELECT,
+      FormElements.elements.TEXTAREA
+    ];
+    formJson.elements = invalidElements;
+    await form.updateFields(formJson.id, formJson);
+  }
+  catch(error: any) {
+    console.log(error.message);
+  }
+  console.log(line);
+
+  console.log("Test inserting elements with duplicate ids");
+  try {
+    // let selectElement = FormElements.elements.SELECT;
+    let invalidElements2: json[] = [
+      {id: "1", type: "INPUT", name: "Input0", label: "Test", required: true, placeholder: "Enter your name", columns: 12},
+      {id: "1", type: "INPUT", name: "Input0", label: "Test", required: true, placeholder: "Enter your name", columns: 12},
+    ];
+    formJson.elements = invalidElements2;
+    await form.updateFields(formJson.id, formJson);
+  }
+  catch(error: any) {
+    console.log(error.message);
+  }
+  console.log(line);
+
+  console.log("Test inserting select element with invalid option");
+  try {
+    let selectElement3 = FormElements.elements.SELECT;
+    selectElement3.options.push({value: 1, display: ""});
+    let invalidElements3: json[] = [
+      {id: "1", type: "INPUT", name: "Input0", label: "Test", required: true, placeholder: "Enter your name", columns: 12},
+      selectElement3
+    ];
+    console.log(selectElement3);
+    formJson.elements = invalidElements3;
+    console.log(formJson);
+    await form.updateFields(formJson.id, formJson);
+  }
+  catch(error: any) {
+    console.log(error.message);
+  }
+  console.log(line);
+
+  console.log("Inserting element with invalid columns");
+  try {
+    let invalidElements4: json[] = [
+      {id: "1", type: "INPUT", name: "Input0", label: "Test", required: true, placeholder: "Enter your name", columns: -1}
+    ];
+    formJson.elements = invalidElements4;
+    await form.updateFields(formJson.id, formJson);
+  }
+  catch(error: any) {
+    console.log(error.message);
   }
   console.log(line);
 

@@ -40,13 +40,15 @@ class User {
         throw new UserAlreadyExistsError();
       }
     }
-    if(!this.validateFields(fields)) {
+    let updateBody: json = this.validateFields(fields);
+    if(Object.keys(updateBody).length == 0) {
       throw new InvalidFieldError();
     }
     if(fields.email !== undefined) {
       cf.update(id, "credentials", {email: fields.email});
     }
-    return await cf.update(id, "users", fields);
+    await cf.update(id, "users", updateBody);
+    return fields;
   }
 
   async delete(userId: string, password: string): Promise<string> {
@@ -85,17 +87,18 @@ class User {
     return user;
   }
 
-  private validateFields(fields: json): boolean {
+  private validateFields(fields: json): json {
+    let updateBody: json = {};
     for(var key in fields) {
       if(this.protectedFields.includes(key)) {
-        delete fields[key];
         continue;
       }
       if(!this.hasOwnProperty(key) || typeof (this as json)[key] !== typeof fields[key]) {
-        return false;
+        return {};
       }
+      updateBody[key] = fields[key];
     }
-    return true;
+    return updateBody;
   }
 
   private async getUserInfo(id: string): Promise<json> {

@@ -17,7 +17,7 @@ class Auth {
     const hashedPassword: string = await bcrypt.hash(password, 10);
     const userCredentials = {id: userId, email: email, password: hashedPassword};
     cf.insert(userId, "credentials", userCredentials);
-    return this.generateAccessToken({id: userCredentials.id});
+    return this.generateAccessToken(userCredentials.id);
   }
 
   async login(email: string, password: string): Promise<string> {
@@ -29,7 +29,7 @@ class Auth {
     if(!await bcrypt.compare(password, userCredentials[0].password)) {
       throw new EmailOrPasswordInvalidError();
     }
-    return this.generateAccessToken({id: userCredentials[0].id});
+    return this.generateAccessToken(userCredentials[0].id);
   }
 
   async sendForgotPasswordEmail(email: string) {
@@ -41,7 +41,7 @@ class Auth {
     let isEmailSuccess: boolean = await EmailSender.sendEmail(
       email,
       "Forgot password",
-      "Verification code: " + this.generateAccessToken(userCredentials[0])
+      "Verification code: " + this.generateAccessToken(userCredentials[0].id)
     );
     if(!isEmailSuccess) {
       throw new EmailSendError();
@@ -49,10 +49,10 @@ class Auth {
   }
 
   async refreshAccessToken(userId: string, accessToken: string): Promise<string> {
-    if(!this.validateAccessToken(accessToken)) {
+    if(!this.validateAccessToken(userId, accessToken)) {
       throw new TokenInvalidError();
     }
-    return this.generateAccessToken({id: userId});
+    return this.generateAccessToken(userId);
   }
 
   async resetPassword(email: string, newPassword: string, token: string) {
@@ -61,7 +61,7 @@ class Auth {
     if(userCredentials.length != 1) {
       throw new UserDoesNotExistError();
     }
-    if(!this.validateAccessToken(token)) {
+    if(!this.validateAccessToken(userCredentials[0].id, token)) {
       throw new TokenInvalidError();
     }
     const hashedPassword: string = await bcrypt.hash(newPassword, 10);
@@ -69,19 +69,25 @@ class Auth {
     cf.update(userCredentials[0].id, "credentials", updateData);
   }
 
-  validateAccessToken(accessToken: string): boolean {
+  validateAccessToken(userId: string, accessToken: string): boolean {
     try {
       // throws exception if accessToken is not valid
-      jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
-      return true;
+      var ca: string = accessToken;
+      var base64Url: string = ca.split('.')[1];
+      let payload: json = JSON.parse(Buffer.from(base64Url, 'base64').toString());
+      return (
+        jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET) &&
+        payload.id === userId
+      );
+      // return true;
     }
-    catch(error) {
+    catch(error: any) {
       return false;
     }
   }
 
-  private generateAccessToken(userCredentials: json): string {
-    return jwt.sign(userCredentials, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "30m"});
+  private generateAccessToken(userId: string): string {
+    return jwt.sign({id: userId}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "30m"});
   }
 }
 

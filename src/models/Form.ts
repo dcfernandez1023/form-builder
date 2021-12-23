@@ -75,10 +75,12 @@ class Form {
 
   async updateFields(id: string, fields: json): Promise<json> {
     let cf: CloudFirestore = new CloudFirestore();
-    if(!this.validateFields(fields)) {
+    let updateBody: json = this.validateFields(fields);
+    if(Object.keys(updateBody).length == 0) {
       throw new InvalidFieldError();
     }
-    return await cf.update(id, "forms", fields);
+    await cf.update(id, "forms", updateBody);
+    return fields;
   }
 
   async delete(id: string): Promise<string> {
@@ -86,32 +88,39 @@ class Form {
     return await cf.delete(id, "forms");
   }
 
-  private validateFields(fields: json): boolean {
+  private validateFields(fields: json): json {
+    let updateBody: json = {};
     for(var key in fields) {
       if(key === "elements") {
         if(!this.validateElements(fields[key])) {
-          return false;
+          return {};
         }
       }
       else if(this.protectedFields.includes(key)) {
-        delete fields[key];
+        continue;
       }
       else if(!this.hasOwnProperty(key) || typeof (this as json)[key] !== typeof fields[key]) {
-        return false;
+        return {};
       }
+      updateBody[key] = fields[key];
     }
-    return true;
+    return updateBody;
   }
 
   private validateElements(elements: json[]): boolean {
+    let elementIds: json = {};
     for(var i: number = 0; i < elements.length; i++) {
       let element: json = elements[i];
-      let elementSchema: json = FormElements.elements[element.type];
+      let elementSchema = FormElements.elements[element.type];
       if(elementSchema === undefined) {
-        return false;
+        throw new InvalidFieldError(element.type + " is not a valid element type");
       }
       if(Object.keys(element).length != Object.keys(elementSchema).length) {
         return false;
+      }
+      // Validate columns field
+      if(element.columns < 0 || element.columns > 12) {
+        throw new InvalidFieldError("Element columns must be between 0 and 12");
       }
       // Validate input, radio, and textarea elements
       if(element.type === "INPUT" || element.type === "RADIO" || element.type === "TEXTAREA") {
@@ -128,13 +137,14 @@ class Form {
             let optionSchema = FormElements.selectOption;
             let len = Object.keys(optionSchema).length;
             for(var x: number = 0; x < element[field].length; x++) {
-              let option = element[field][i];
+              let option = element[field][x];
               if(Object.keys(option).length != len) {
-                return false;
+                throw new InvalidFieldError("Invalid option for select element");
               }
+              // Check that the select element's options have correct schema
               for(var optionKey in option) {
                 if(optionSchema[optionKey] === undefined || typeof option[optionKey] !== typeof optionSchema[optionKey]) {
-                  return false;
+                  throw new InvalidFieldError("Invalid option for select element");
                 }
               }
             }
@@ -143,6 +153,16 @@ class Form {
             return false;
           }
         }
+      }
+      // Check for duplicate ids
+      if(element.id.trim().length == 0) {
+        element.id = uuidv4().toString();
+      }
+      if(elementIds[element.id] !== undefined) {
+        throw new InvalidFieldError("Duplicate element ids");
+      }
+      else {
+        elementIds[element.id] = true;
       }
     }
     return true;

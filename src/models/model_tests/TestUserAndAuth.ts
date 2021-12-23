@@ -60,7 +60,7 @@ const main = async () => {
 
   console.log("Validate token failure");
   try {
-    console.log(auth.validateAccessToken("invalid token"));
+    console.log(auth.validateAccessToken(id, "invalid token"));
   }
   catch(error: any) {
     console.log(error.message);
@@ -68,7 +68,7 @@ const main = async () => {
   console.log(line);
 
   console.log("Validate token success");
-  console.log(auth.validateAccessToken(token));
+  console.log(auth.validateAccessToken(id, token));
   console.log(line);
 
   console.log("Refresh invalid access token");
@@ -84,7 +84,7 @@ const main = async () => {
   try {
     let newToken = await auth.refreshAccessToken(id, token);
     console.log(newToken);
-    console.log(auth.validateAccessToken(newToken));
+    console.log(auth.validateAccessToken(id, newToken));
   }
   catch(error: any) {
     console.log(error.message);
