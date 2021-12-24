@@ -93,7 +93,7 @@ const main = async () => {
 
   console.log("Send forgot password email with non-existing user");
   try {
-    await auth.sendForgotPasswordEmail("test@gmail.com");
+    await auth.sendForgotPasswordEmail("test13213143243545453@gmail.com");
   }
   catch(error: any) {
     console.log(error.message);

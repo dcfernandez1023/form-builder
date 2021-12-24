@@ -100,7 +100,7 @@ const main = async () => {
 
   console.log("Test inserting select element with invalid option");
   try {
-    let selectElement3 = FormElements.elements.SELECT;
+    let selectElement3 = JSON.parse(JSON.stringify(FormElements.elements.SELECT));
     selectElement3.options.push({value: 1, display: ""});
     let invalidElements3: json[] = [
       {id: "1", type: "INPUT", name: "Input0", label: "Test", required: true, placeholder: "Enter your name", columns: 12},
@@ -123,6 +123,63 @@ const main = async () => {
     ];
     formJson.elements = invalidElements4;
     await form.updateFields(formJson.id, formJson);
+  }
+  catch(error: any) {
+    console.log(error.message);
+  }
+  console.log(line);
+
+  console.log("Inserting invalid submission handler");
+  try {
+    let submissionHandlers = [
+      {
+        type: "Email1",
+        isEnabled: true,
+        receivers: ["dom22c@gmail.com"]
+      }
+    ];
+    let validElements: json[] = [
+      {id: "", type: "INPUT", name: "Input", label: "Test", required: true, placeholder: "Enter your name", columns: 12},
+      FormElements.elements.RADIO,
+      FormElements.elements.SELECT,
+      FormElements.elements.TEXTAREA
+    ];
+    validElements[2].options.push({value: "test", display: "Test"});
+    formJson.elements = validElements;
+    formJson.submissionHandlers = submissionHandlers;
+    await form.updateFields(formJson.id, formJson);
+  }
+  catch(error: any) {
+    console.log(error.message);
+  }
+  console.log(line);
+
+  console.log("Inserting valid submission handler");
+  try {
+    let submissionHandlers2 = [
+      {
+        type: "Email",
+        isEnabled: true,
+        receivers: ["dom22c@gmail.com"]
+      }
+    ];
+    formJson.submissionHandlers = submissionHandlers2;
+    console.log(await form.updateFields(formJson.id, formJson));
+  }
+  catch(error: any) {
+    console.log(error.message);
+  }
+  console.log(line);
+
+  console.log("Executing submission handlers with valid data");
+  try {
+    formJson = await form.updateFields(formJson.id, formJson);
+    let formData: json = {};
+    for(var i: number = 0; i < formJson.elements.length; i++) {
+      let elementId: string = formJson.elements[i].id;
+      formData[elementId] = {name: "Test", value: "test"};
+    }
+    console.log(await form.handleSubmit(formJson.id, formData));
   }
   catch(error: any) {
     console.log(error.message);

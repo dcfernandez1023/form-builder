@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 
 
 class EmailSender {
-  static async sendEmail(to: string, subject: string, message: string): Promise<boolean> {
+  static async sendEmail(to: string[], subject: string, message: string): Promise<boolean> {
     var transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {

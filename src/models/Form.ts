@@ -1,9 +1,14 @@
 import { CloudFirestore } from "./data_access/CloudFirestore";
 import { InvalidFieldError } from "../errors/InvalidFieldError";
 import { UserDoesNotExistError } from "../errors/UserDoesNotExistError";
+import { FormNotFoundError } from "../errors/FormNotFoundError";
+import { NoSuchSubmissionHandlerError } from "../errors/NoSuchSubmissionHandlerError";
 import { json } from "./Json";
 import { v4 as uuidv4 } from 'uuid';
 import * as FormElements from "./formElements";
+import { SubmissionHandler } from "./SubmissionHandler";
+import { EmailSubmissionHandler } from "./EmailSubmissionHandler";
+import { SubmissionHandlerFactory } from "./SubmissionHandlerFactory";
 
 
 class Form {
@@ -15,7 +20,7 @@ class Form {
   isPublished: boolean
   accessKey: string;
   elements: json[];
-  submissions: number[];
+  submissions: json[];
   submissionHandlers: json;
   protectedFields: string[] = [
     "id",
@@ -88,11 +93,52 @@ class Form {
     return await cf.delete(id, "forms");
   }
 
+  async handleSubmit(formId: string, formSubmission: json): Promise<json> {
+    let cf: CloudFirestore = new CloudFirestore();
+    let formData: json[] = await cf.getByFilter("forms", "id", "==", formId);
+    if(formData.length != 1) {
+      throw new FormNotFoundError();
+    }
+    let form = formData[0];
+    // Check that formData matches form's elements
+    /*
+      formData should be in the format: {id: {name: <string>, value: <string>}}
+    */
+    let parsedFormData: json[] = [];
+    for(var i: number = 0; i < form.elements.length; i++) {
+      let elementId: string = form.elements[i].id;
+      if(formSubmission[elementId] === undefined || formSubmission[elementId].name === undefined || formSubmission[elementId].value === undefined) {
+        throw new InvalidFieldError("Form submission data is not formatted correctly");
+      }
+      parsedFormData.push({id: elementId, name: formSubmission[elementId].name, value: formSubmission[elementId].value});
+    }
+    let errors: Error[] = [];
+    for(var i: number = 0; i < form.submissionHandlers.length; i++) {
+      let config: json = form.submissionHandlers[i];
+      let handler: SubmissionHandler | null = SubmissionHandlerFactory.getSubmissionHandler(config);
+      if(handler === null) {
+        errors.push(new NoSuchSubmissionHandlerError(config.type));
+        continue;
+      }
+      handler.executeSubmit(formId, parsedFormData);
+    }
+    form.submissions.push({
+      timestamp: new Date().getTime(),
+      data: parsedFormData
+    });
+    return {submissionErrors: errors, form: form};
+  }
+
   private validateFields(fields: json): json {
     let updateBody: json = {};
     for(var key in fields) {
       if(key === "elements") {
         if(!this.validateElements(fields[key])) {
+          return {};
+        }
+      }
+      else if(key === "submissionHandlers") {
+        if(!this.validateSubmissionHandlers(fields[key])) {
           return {};
         }
       }
@@ -163,6 +209,28 @@ class Form {
       }
       else {
         elementIds[element.id] = true;
+      }
+    }
+    return true;
+  }
+
+  private validateSubmissionHandlers(handlers: json[]): boolean {
+    let handlerTypes: json = {};
+    for(var i: number = 0; i < handlers.length; i++) {
+      let config: json = handlers[i];
+      let handler: SubmissionHandler | null = SubmissionHandlerFactory.getSubmissionHandler(config);
+      if(handler === null) {
+        throw new NoSuchSubmissionHandlerError(config.type);
+      }
+      if(!handler.validateConfig(config)) {
+        return false;
+      }
+      // Check duplicates types
+      if(handlerTypes[handler.type] !== undefined) {
+        throw new InvalidFieldError("Duplicate submission handler");
+      }
+      else {
+        handlerTypes[handler.type] = true;
       }
     }
     return true;

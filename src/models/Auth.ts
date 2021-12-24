@@ -39,7 +39,7 @@ class Auth {
       throw new UserDoesNotExistError();
     }
     let isEmailSuccess: boolean = await EmailSender.sendEmail(
-      email,
+      [email],
       "Forgot password",
       "Verification code: " + this.generateAccessToken(userCredentials[0].id)
     );
