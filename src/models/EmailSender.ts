@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 
 
 class EmailSender {
-  static async sendEmail(to: string[], subject: string, message: string) {
+  static async sendEmail(to: string[], subject: string, message: string, html?: string) {
     var transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -14,7 +14,8 @@ class EmailSender {
       from: process.env.SERVICE_EMAIL,
       to: to,
       subject: subject,
-      text: message
+      text: message,
+      html: html === undefined ? "" : html
     };
     await transporter.sendMail(mailOptions);
   }

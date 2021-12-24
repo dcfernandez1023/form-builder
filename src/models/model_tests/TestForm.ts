@@ -160,7 +160,7 @@ const main = async () => {
       {
         type: "Email",
         isEnabled: true,
-        receivers: {receiver: "dom22c@gmail.com"}
+        receivers: ["dom22c@gmail.com"]
       }
     ];
     formJson.submissionHandlers = submissionHandlers2;

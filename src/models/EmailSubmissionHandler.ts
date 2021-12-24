@@ -40,7 +40,22 @@ class EmailSubmissionHandler implements SubmissionHandler {
     if(!this.isEnabled) {
       return;
     }
-    await EmailSender.sendEmail(this.receivers, "Form submission " + new Date().toLocaleDateString(), JSON.stringify(formData));
+    let html: string = "<table>";
+    // Create header row
+    html += "<tr>";
+    for(var i: number = 0; i < formData.length; i++) {
+      html += "<th>" + formData[i].name + "</th>";
+    }
+    html += "</tr>";
+    // Create value rows
+    html += "<tr>";
+    for(var i: number = 0; i < formData.length; i++) {
+      html += "<td>" + formData[i].value + "</td>";
+    }
+    html += "</tr>";
+    html += "</table>";
+    console.log(html);
+    await EmailSender.sendEmail(this.receivers, "Form submission " + new Date().toLocaleDateString(), JSON.stringify(formData), html);
   }
 }
 
