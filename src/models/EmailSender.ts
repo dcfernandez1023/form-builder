@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 
 
 class EmailSender {
-  static async sendEmail(to: string[], subject: string, message: string): Promise<boolean> {
+  static async sendEmail(to: string[], subject: string, message: string) {
     var transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -16,15 +16,7 @@ class EmailSender {
       subject: subject,
       text: message
     };
-    try {
-      await transporter.sendMail(mailOptions);
-      return true;
-    }
-    catch(error) {
-      console.log(error);
-      return false;
-    }
-    return false;
+    await transporter.sendMail(mailOptions);
   }
 }
 

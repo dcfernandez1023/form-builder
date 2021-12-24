@@ -112,15 +112,20 @@ class Form {
       }
       parsedFormData.push({id: elementId, name: formSubmission[elementId].name, value: formSubmission[elementId].value});
     }
-    let errors: Error[] = [];
+    let errors: string[] = [];
     for(var i: number = 0; i < form.submissionHandlers.length; i++) {
-      let config: json = form.submissionHandlers[i];
-      let handler: SubmissionHandler | null = SubmissionHandlerFactory.getSubmissionHandler(config);
-      if(handler === null) {
-        errors.push(new NoSuchSubmissionHandlerError(config.type));
-        continue;
+      try {
+        let config: json = form.submissionHandlers[i];
+        let handler: SubmissionHandler | null = SubmissionHandlerFactory.getSubmissionHandler(config);
+        if(handler === null) {
+          throw new NoSuchSubmissionHandlerError(config.type);
+        }
+        await handler.executeSubmit(formId, parsedFormData);
+        console.log("here");
       }
-      handler.executeSubmit(formId, parsedFormData);
+      catch(error: any) {
+        errors.push(error.message);
+      }
     }
     form.submissions.push({
       timestamp: new Date().getTime(),

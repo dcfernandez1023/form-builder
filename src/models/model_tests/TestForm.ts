@@ -160,7 +160,7 @@ const main = async () => {
       {
         type: "Email",
         isEnabled: true,
-        receivers: ["dom22c@gmail.com"]
+        receivers: {receiver: "dom22c@gmail.com"}
       }
     ];
     formJson.submissionHandlers = submissionHandlers2;
@@ -173,7 +173,6 @@ const main = async () => {
 
   console.log("Executing submission handlers with valid data");
   try {
-    formJson = await form.updateFields(formJson.id, formJson);
     let formData: json = {};
     for(var i: number = 0; i < formJson.elements.length; i++) {
       let elementId: string = formJson.elements[i].id;

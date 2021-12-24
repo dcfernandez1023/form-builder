@@ -40,7 +40,7 @@ class EmailSubmissionHandler implements SubmissionHandler {
     if(!this.isEnabled) {
       return;
     }
-    EmailSender.sendEmail(this.receivers, "Form submission " + new Date().toLocaleDateString(), JSON.stringify(formData));
+    await EmailSender.sendEmail(this.receivers, "Form submission " + new Date().toLocaleDateString(), JSON.stringify(formData));
   }
 }
 

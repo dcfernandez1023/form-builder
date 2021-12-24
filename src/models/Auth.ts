@@ -38,14 +38,11 @@ class Auth {
     if(userCredentials.length != 1) {
       throw new UserDoesNotExistError();
     }
-    let isEmailSuccess: boolean = await EmailSender.sendEmail(
+    await EmailSender.sendEmail(
       [email],
       "Forgot password",
       "Verification code: " + this.generateAccessToken(userCredentials[0].id)
     );
-    if(!isEmailSuccess) {
-      throw new EmailSendError();
-    }
   }
 
   async refreshAccessToken(userId: string, accessToken: string): Promise<string> {
