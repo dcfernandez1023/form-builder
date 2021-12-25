@@ -133,9 +133,19 @@ const main = async () => {
   try {
     let submissionHandlers = [
       {
-        type: "Email1",
+        type: "Email",
         isEnabled: true,
         receivers: ["dom22c@gmail.com"]
+      },
+      {
+        type: "REST",
+        isEnabled: true,
+        endpoint: "http://localhost:5000/api/test"
+      },
+      {
+        type: "Gsheet1",
+        isEnabled: true,
+        gsheetId: "1e9P3xSFe3frStI4kY2hK96XNP3Feza41hPvleWUNbHw"
       }
     ];
     let validElements: json[] = [
@@ -154,13 +164,23 @@ const main = async () => {
   }
   console.log(line);
 
-  console.log("Inserting valid submission handler");
+  console.log("Inserting valid submission handlers");
   try {
     let submissionHandlers2 = [
       {
         type: "Email",
         isEnabled: true,
         receivers: ["dom22c@gmail.com"]
+      },
+      {
+        type: "REST",
+        isEnabled: true,
+        endpoint: "http://localhost:5000/api/test"
+      },
+      {
+        type: "Gsheet",
+        isEnabled: true,
+        gsheetId: "1e9P3xSFe3frStI4kY2hK96XNP3Feza41hPvleWUNbHw"
       }
     ];
     formJson.submissionHandlers = submissionHandlers2;
