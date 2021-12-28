@@ -8,8 +8,9 @@
 import { UserAlreadyExistsError } from "../errors/UserAlreadyExistsError";
 import { UserDoesNotExistError } from "../errors/UserDoesNotExistError";
 import { InvalidFieldError } from "../errors/InvalidFieldError";
+import { RestrictedResourceError } from "../errors/RestrictedResourceError";
 import { Auth } from "./Auth";
-import { CloudFirestore } from "./data_access/CloudFirestore";
+import { cf } from "./data_access/CloudFirestore";
 import { json } from "./Json";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -33,8 +34,16 @@ class User {
     this.dateCreated = 0;
   }
 
+  /**
+    * @param id The id of the user to update
+    * @param fields The fields of the user to update. Must contain all of the
+                    key-value pairs of the User's properties above. The key-value
+                    pairs specified in the protectedFields property will not
+                    be updated.
+    * @return A Promise object that resolves to a json object containing the fields
+              that were updated (which are all the fields except for the ones in protectedFields)
+  */
   async updateFields(id: string, fields: json): Promise<json> {
-    let cf = new CloudFirestore();
     if(fields.email !== undefined) {
       if(await User.doesUserExist(fields.email)) {
         throw new UserAlreadyExistsError();
@@ -48,23 +57,25 @@ class User {
       cf.update(id, "credentials", {email: fields.email});
     }
     await cf.update(id, "users", updateBody);
-    return fields;
+    return updateBody;
   }
 
   async delete(userId: string, password: string): Promise<string> {
-    let cf: CloudFirestore = new CloudFirestore();
-    await cf.delete(userId, "users");
-    return await cf.delete(userId, "credentials");
+    let accessToken: string = await Auth.userIdLogin(userId, password);
+    if(accessToken) {
+      await cf.delete(userId, "users");
+      return await cf.delete(userId, "credentials");
+    }
+    return "";
   }
 
   static async createNew(email: string, password: string, firstName: string, lastName: string): Promise<json> {
-    let auth: Auth = new Auth();
-    let cf: CloudFirestore = new CloudFirestore();
+    // let cf: CloudFirestore = new CloudFirestore();
     if(await User.doesUserExist(email)) {
       throw new UserAlreadyExistsError();
     }
     let id:string = uuidv4().toString();
-    await auth.register(id, email, password);
+    await Auth.register(id, email, password);
     return await cf.insert(id, "users", {
       id: id,
       email: email,
@@ -74,10 +85,18 @@ class User {
     });
   }
 
-  async getUserByEmail(email: string): Promise<json> {
-    let userData: json[] = await new CloudFirestore().getByFilter("users", "email", "==", email);
+  async getUserByEmail(userId: string, email: string): Promise<json> {
+    let userData: json[] = await cf.getByFilters(
+      "users",
+      ["email", "id"],
+      ["==", "=="],
+      [email, userId]
+    );
     if(userData.length != 1) {
       return {};
+    }
+    if(userId !== userData[0].id) {
+      throw new RestrictedResourceError();
     }
     return userData[0];
   }
@@ -102,7 +121,7 @@ class User {
   }
 
   private async getUserInfo(id: string): Promise<json> {
-    let cf: CloudFirestore = new CloudFirestore();
+    // let cf: CloudFirestore = new CloudFirestore();
     let userData: json[] = await cf.getByFilter("users", "id", "==", id);
     if(userData.length != 1) {
       return {};
@@ -111,7 +130,7 @@ class User {
   }
 
   private static async doesUserExist(email: string): Promise<boolean> {
-    let cf: CloudFirestore = new CloudFirestore();
+    // let cf: CloudFirestore = new CloudFirestore();
     let currentUserData: json[] = await cf.getByFilter("users", "email", "==", email);
     let credentialsData: json[] = await cf.getByFilter("credentials", "email", "==", email);
     if(currentUserData.length > 0 || credentialsData.length > 0) {

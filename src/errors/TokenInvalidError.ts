@@ -1,14 +1,10 @@
-class TokenInvalidError extends Error {
-  message: string;
+import { CustomError } from "./CustomError";
+const { UNAUTHORIZED } = require('http-status-codes');
 
-  constructor(message?: string) {
-    super(message);
-    if(typeof message !== "undefined") {
-      this.message = message;
-    }
-    else {
-      this.message = "Invalid access token";
-    }
+
+class TokenInvalidError extends CustomError {
+  constructor(message?: string, statusCode?: number) {
+    super(message === undefined ? "Token invalid" : message, UNAUTHORIZED);
     Object.setPrototypeOf(this, TokenInvalidError.prototype);
   }
 }

@@ -1,14 +1,10 @@
-class UserDoesNotExistError extends Error {
-  message: string;
+import { CustomError } from "./CustomError";
+const { NOT_FOUND } = require('http-status-codes');
 
-  constructor(message?: string) {
-    super(message);
-    if(typeof message !== "undefined") {
-      this.message = message;
-    }
-    else {
-      this.message = "User does not exist";
-    }
+
+class UserDoesNotExistError extends CustomError {
+  constructor(message?: string, statusCode?: number) {
+    super(message === undefined ? "User does not exist" : message, NOT_FOUND);
     Object.setPrototypeOf(this, UserDoesNotExistError.prototype);
   }
 }

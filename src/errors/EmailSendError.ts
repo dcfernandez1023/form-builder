@@ -1,14 +1,10 @@
-class EmailSendError extends Error {
-  message: string;
+import { CustomError } from "./CustomError";
+const { INTERNAL_SERVER_ERROR } = require('http-status-codes');
 
-  constructor(message?: string) {
-    super(message);
-    if(typeof message !== "undefined") {
-      this.message = message;
-    }
-    else {
-      this.message = "Failed to send email";
-    }
+
+class EmailSendError extends CustomError {
+  constructor(message?: string, statusCode?: number) {
+    super(message === undefined ? "Failed to send email" : message, INTERNAL_SERVER_ERROR);
     Object.setPrototypeOf(this, EmailSendError.prototype);
   }
 }

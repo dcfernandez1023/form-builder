@@ -9,7 +9,7 @@ const main = async () => {
   const title: string = "Test Form";
   let user: json = {
     id: 'd83141ff-c06c-4945-ae6e-7e0109af5f78',
-    email: 'test@gmail.com',
+    email: 'dom22c@gmail.com',
     firstName: 'Dom',
     lastName: 'Fernandez',
     dateCreated: 1640158612979
@@ -58,7 +58,7 @@ const main = async () => {
       FormElements.elements.TEXTAREA
     ];
     formJson.elements = validElements;
-    console.log(await form.updateFields(formJson.id, formJson));
+    console.log(await form.updateFields(user.id, formJson.id, formJson));
   }
   catch(error: any) {
     console.log(error.message);
@@ -68,7 +68,7 @@ const main = async () => {
   console.log("Test inserting invalid elements");
   try {
     formJson.elements = [];
-    await form.updateFields(formJson.id, formJson);
+    await form.updateFields(user.id, formJson.id, formJson);
     let invalidElements: json[] = [
       {id: "", type: "not valid type", name: "Input0", label: "Test", required: true, placeholder: "Enter your name", columns: 12},
       FormElements.elements.RADIO,
@@ -76,7 +76,7 @@ const main = async () => {
       FormElements.elements.TEXTAREA
     ];
     formJson.elements = invalidElements;
-    await form.updateFields(formJson.id, formJson);
+    await form.updateFields(user.id, formJson.id, formJson);
   }
   catch(error: any) {
     console.log(error.message);
@@ -91,7 +91,7 @@ const main = async () => {
       {id: "1", type: "INPUT", name: "Input0", label: "Test", required: true, placeholder: "Enter your name", columns: 12},
     ];
     formJson.elements = invalidElements2;
-    await form.updateFields(formJson.id, formJson);
+    await form.updateFields(user.id, formJson.id, formJson);
   }
   catch(error: any) {
     console.log(error.message);
@@ -109,7 +109,7 @@ const main = async () => {
     console.log(selectElement3);
     formJson.elements = invalidElements3;
     console.log(formJson);
-    await form.updateFields(formJson.id, formJson);
+    await form.updateFields(user.id, formJson.id, formJson);
   }
   catch(error: any) {
     console.log(error.message);
@@ -122,7 +122,7 @@ const main = async () => {
       {id: "1", type: "INPUT", name: "Input0", label: "Test", required: true, placeholder: "Enter your name", columns: -1}
     ];
     formJson.elements = invalidElements4;
-    await form.updateFields(formJson.id, formJson);
+    await form.updateFields(user.id, formJson.id, formJson);
   }
   catch(error: any) {
     console.log(error.message);
@@ -143,9 +143,10 @@ const main = async () => {
         endpoint: "http://localhost:5000/api/test"
       },
       {
-        type: "Gsheet1",
+        type: "Gsheet",
         isEnabled: true,
-        gsheetId: "1e9P3xSFe3frStI4kY2hK96XNP3Feza41hPvleWUNbHw"
+        gsheetId: "1e9P3xSFe3frStI4kY2hK96XNP3Feza41hPvleWUNbHw",
+        test: ""
       }
     ];
     let validElements: json[] = [
@@ -157,7 +158,7 @@ const main = async () => {
     validElements[2].options.push({value: "test", display: "Test"});
     formJson.elements = validElements;
     formJson.submissionHandlers = submissionHandlers;
-    await form.updateFields(formJson.id, formJson);
+    await form.updateFields(user.id, formJson.id, formJson);
   }
   catch(error: any) {
     console.log(error.message);
@@ -184,7 +185,7 @@ const main = async () => {
       }
     ];
     formJson.submissionHandlers = submissionHandlers2;
-    console.log(await form.updateFields(formJson.id, formJson));
+    console.log(await form.updateFields(user.id, formJson.id, formJson));
   }
   catch(error: any) {
     console.log(error.message);
@@ -206,7 +207,7 @@ const main = async () => {
   console.log(line);
 
   console.log("Delete form");
-  console.log(await form.delete(formJson.id));
+  console.log(await form.delete(user.id, formJson.id));
   console.log(line);
 
 }

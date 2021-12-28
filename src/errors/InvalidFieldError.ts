@@ -1,14 +1,10 @@
-class InvalidFieldError extends Error {
-  message: string;
+import { CustomError } from "./CustomError";
+const { UNSUPPORTED_MEDIA_TYPE } = require('http-status-codes');
 
-  constructor(message?: string) {
-    super(message);
-    if(typeof message !== "undefined") {
-      this.message = message;
-    }
-    else {
-      this.message = "Invalid json body";
-    }
+
+class InvalidFieldError extends CustomError {
+  constructor(message?: string, statusCode?: number) {
+    super(message === undefined ? "Invalid username or password" : message, UNSUPPORTED_MEDIA_TYPE);
     Object.setPrototypeOf(this, InvalidFieldError.prototype);
   }
 }

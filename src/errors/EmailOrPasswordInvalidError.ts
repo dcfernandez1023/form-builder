@@ -1,14 +1,10 @@
-class EmailOrPasswordInvalidError extends Error {
-  message: string;
+import { CustomError } from "./CustomError";
+const { UNAUTHORIZED } = require('http-status-codes');
 
-  constructor(message?: string) {
-    super(message);
-    if(typeof message !== "undefined") {
-      this.message = message;
-    }
-    else {
-      this.message = "Invalid username or password";
-    }
+
+class EmailOrPasswordInvalidError extends CustomError {
+  constructor(message?: string, statusCode?: number) {
+    super(message === undefined ? "Invalid username or password" : message, UNAUTHORIZED);
     Object.setPrototypeOf(this, EmailOrPasswordInvalidError.prototype);
   }
 }

@@ -34,7 +34,6 @@ const main = async () => {
   console.log(line);
 
   let user = new User();
-  let auth = new Auth();
 
   console.log("Updating user");
   console.log(await user.updateFields(id, {id: "123", email: "dom22c@gmail.com", firstName: "Dominic"}));
@@ -46,7 +45,7 @@ const main = async () => {
 
   console.log("Failed login");
   try {
-    console.log(await auth.login("dom22c@gmail.com", "123"));
+    console.log(await Auth.login("dom22c@gmail.com", "123"));
   }
   catch(error: any) {
     console.log(error.message);
@@ -54,13 +53,13 @@ const main = async () => {
   console.log(line);
 
   console.log("Successful login");
-  let token: string = await auth.login("dom22c@gmail.com", "test123");
+  let token: string = await Auth.login("dom22c@gmail.com", "test123");
   console.log(token);
   console.log(line);
 
   console.log("Validate token failure");
   try {
-    console.log(auth.validateAccessToken(id, "invalid token"));
+    console.log(Auth.validateAccessToken("invalid token"));
   }
   catch(error: any) {
     console.log(error.message);
@@ -68,12 +67,12 @@ const main = async () => {
   console.log(line);
 
   console.log("Validate token success");
-  console.log(auth.validateAccessToken(id, token));
+  console.log(Auth.validateAccessToken(token));
   console.log(line);
 
   console.log("Refresh invalid access token");
   try {
-    console.log(await auth.refreshAccessToken(id, "invalid token"));
+    console.log(await Auth.refreshAccessToken(id, "invalid token"));
   }
   catch(error: any) {
     console.log(error.message);
@@ -82,9 +81,9 @@ const main = async () => {
 
   console.log("Refresh valid access token");
   try {
-    let newToken = await auth.refreshAccessToken(id, token);
+    let newToken = await Auth.refreshAccessToken(id, token);
     console.log(newToken);
-    console.log(auth.validateAccessToken(id, newToken));
+    console.log(Auth.validateAccessToken(newToken));
   }
   catch(error: any) {
     console.log(error.message);
@@ -93,7 +92,7 @@ const main = async () => {
 
   console.log("Send forgot password email with non-existing user");
   try {
-    await auth.sendForgotPasswordEmail("test13213143243545453@gmail.com");
+    await Auth.sendForgotPasswordEmail("test13213143243545453@gmail.com");
   }
   catch(error: any) {
     console.log(error.message);
@@ -102,7 +101,7 @@ const main = async () => {
 
   console.log("Send forgot password email success");
   try {
-    await auth.sendForgotPasswordEmail("dom22c@gmail.com");
+    await Auth.sendForgotPasswordEmail("dom22c@gmail.com");
   }
   catch(error: any) {
     console.log(error.message);

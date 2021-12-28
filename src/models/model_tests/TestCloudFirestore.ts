@@ -1,10 +1,10 @@
-import { CloudFirestore } from "../data_access/CloudFirestore";
+import { cf } from "../data_access/CloudFirestore";
 import { v4 as uuidv4 } from 'uuid';
 import { json } from "../Json";
 
 
 const main = async () => {
-  let cf = new CloudFirestore();
+  // let cf = new CloudFirestore();
   let id: string = uuidv4().toString();
 
   console.log("Inserting");

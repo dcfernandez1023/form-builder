@@ -26,6 +26,29 @@ class CloudFirestore implements DataAccess {
     return data;
   }
 
+  async getByFilters(collection: string, keys: string[], filterConds: string[], values: string[], limit: number = -1): Promise<json[]> {
+    const data: json[] = [];
+    const collectionRef = this.connection.collection(collection);
+    var query = collectionRef;
+    var snapshot = null;
+    if(keys.length != filterConds.length || keys.length != values.length || filterConds.length != values.length) {
+      throw new Error("The parameters keys, filterConds, and/or values are not of equal array lengths");
+    }
+    for(var i : number = 0; i < keys.length; i++) {
+      query = query.where(keys[i], filterConds[i], values[i]);
+    }
+    if(limit != -1) {
+      snapshot = await query.limit(limit).get();
+    }
+    else {
+      snapshot = await query.get();
+    }
+    snapshot.forEach((doc: any) => {
+      data.push(doc.data());
+    });
+    return data;
+  }
+
   async getAll(collection: string): Promise<json[]> {
     const data: json[] = [];
     const collectionRef = this.connection.collection(collection);
@@ -59,4 +82,7 @@ class CloudFirestore implements DataAccess {
 }
 
 
-export { CloudFirestore };
+let cf: CloudFirestore = new CloudFirestore();
+
+
+export { cf };

@@ -1,8 +1,9 @@
-import { CloudFirestore } from "./data_access/CloudFirestore";
+import { cf } from "./data_access/CloudFirestore";
 import { InvalidFieldError } from "../errors/InvalidFieldError";
 import { UserDoesNotExistError } from "../errors/UserDoesNotExistError";
 import { FormNotFoundError } from "../errors/FormNotFoundError";
 import { NoSuchSubmissionHandlerError } from "../errors/NoSuchSubmissionHandlerError";
+import { RestrictedResourceError } from "../errors/RestrictedResourceError";
 import { json } from "./Json";
 import { v4 as uuidv4 } from 'uuid';
 import * as FormElements from "./formElements";
@@ -26,6 +27,7 @@ class Form {
     "id",
     "userId",
     "dateCreated",
+    "lastModified",
     "submissions"
   ];
 
@@ -44,7 +46,7 @@ class Form {
 
   static async createNew(userId: string, title: string): Promise<json> {
     let date: Date = new Date();
-    let cf: CloudFirestore = new CloudFirestore();
+    // let cf: CloudFirestore = new CloudFirestore();
     let userData = await cf.getByFilter("users", "id", "==", userId);
     if(userData.length != 1) {
       throw new UserDoesNotExistError();
@@ -65,12 +67,10 @@ class Form {
   }
 
   async getByUserId(userId: string): Promise<json[]> {
-    let cf: CloudFirestore = new CloudFirestore();
     return await cf.getByFilter("forms", "userId", "==", userId);
   }
 
   async getByFormId(id: string): Promise<json> {
-    let cf: CloudFirestore = new CloudFirestore();
     let formData: json[] = await cf.getByFilter("forms", "id", "==", id);
     if(formData.length != 1) {
       return {};
@@ -78,23 +78,27 @@ class Form {
     return formData[0];
   }
 
-  async updateFields(id: string, fields: json): Promise<json> {
-    let cf: CloudFirestore = new CloudFirestore();
+  async updateFields(userId: string, id: string, fields: json): Promise<json> {
+    if(!await this.doesUserOwnForm(userId, id)) {
+      throw new RestrictedResourceError();
+    }
     let updateBody: json = this.validateFields(fields);
     if(Object.keys(updateBody).length == 0) {
       throw new InvalidFieldError();
     }
+    updateBody.lastModified = new Date().getTime();
     await cf.update(id, "forms", updateBody);
     return fields;
   }
 
-  async delete(id: string): Promise<string> {
-    let cf: CloudFirestore = new CloudFirestore();
+  async delete(userId: string, id: string): Promise<string> {
+    if(!await this.doesUserOwnForm(userId, id)) {
+      throw new RestrictedResourceError();
+    }
     return await cf.delete(id, "forms");
   }
 
   async handleSubmit(formId: string, formSubmission: json): Promise<json> {
-    let cf: CloudFirestore = new CloudFirestore();
     let formData: json[] = await cf.getByFilter("forms", "id", "==", formId);
     if(formData.length != 1) {
       throw new FormNotFoundError();
@@ -132,6 +136,14 @@ class Form {
       data: parsedFormData
     });
     return {submissionErrors: errors, form: form};
+  }
+
+  private doesUserOwnForm(userId: string, formId: string): Promise<boolean> {
+    let form: json = await this.getByFormId(formId);
+    if(Object.keys(form) == 0) {
+      throw new FormNotFoundError();
+    }
+    return form.userId === userId;
   }
 
   private validateFields(fields: json): json {

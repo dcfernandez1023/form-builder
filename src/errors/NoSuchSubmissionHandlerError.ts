@@ -1,10 +1,10 @@
-class NoSuchSubmissionHandlerError extends Error {
-  message: string;
+import { CustomError } from "./CustomError";
+const { UNSUPPORTED_MEDIA_TYPE } = require('http-status-codes');
 
-  constructor(handlerType: string) {
-    let message: string = "No such submission handler " + handlerType;
-    super(message);
-    this.message = message;
+
+class NoSuchSubmissionHandlerError extends CustomError {
+  constructor(type: string, statusCode?: number) {
+    super("No such submission handler " + type, UNSUPPORTED_MEDIA_TYPE);
     Object.setPrototypeOf(this, NoSuchSubmissionHandlerError.prototype);
   }
 }

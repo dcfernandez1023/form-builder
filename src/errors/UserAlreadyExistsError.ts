@@ -1,14 +1,10 @@
-class UserAlreadyExistsError extends Error {
-  message: string;
+import { CustomError } from "./CustomError";
+const { CONFLICT } = require('http-status-codes');
 
-  constructor(message?: string) {
-    super(message);
-    if(typeof message !== "undefined") {
-      this.message = message;
-    }
-    else {
-      this.message = "User already exists";
-    }
+
+class UserAlreadyExistsError extends CustomError {
+  constructor(message?: string, statusCode?: number) {
+    super(message === undefined ? "User already exists" : message, CONFLICT);
     Object.setPrototypeOf(this, UserAlreadyExistsError.prototype);
   }
 }
