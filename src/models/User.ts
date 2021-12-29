@@ -64,7 +64,9 @@ class User {
     let accessToken: string = await Auth.userIdLogin(userId, password);
     if(accessToken) {
       await cf.delete(userId, "users");
-      return await cf.delete(userId, "credentials");
+      let deletedId: string = await cf.delete(userId, "credentials");
+      await cf.deleteMultiple("id", "forms", "userId", "==", userId);
+      return deletedId;
     }
     return "";
   }

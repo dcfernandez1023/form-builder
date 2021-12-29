@@ -35,6 +35,7 @@ module.exports.getForms = async (req: any, res: any, next: Function): Promise<an
     let accessToken: string = await Auth.refreshAccessToken(userId, req.header(ACCESS_TOKEN));
     let form: Form = new Form();
     let userForms: json[] = await form.getByUserId(userId);
+    res.set(ACCESS_TOKEN, accessToken);
     return res.status(OK).json(userForms);
   }
   catch(error: any) {
@@ -55,6 +56,7 @@ module.exports.getForm = async (req: any, res: any, next: Function): Promise<any
     let formId: string = req.params.formId;
     let form: Form = new Form();
     let formData: json = await form.getByFormId(formId);
+    res.set(ACCESS_TOKEN, accessToken);
     return res.status(OK).json(formData);
   }
   catch(error: any) {
@@ -76,6 +78,7 @@ module.exports.updateFields = async (req: any, res: any, next: Function): Promis
     let body = req.body;
     let form: Form = new Form();
     let updateRes = await form.updateFields(userId, formId, body.fields);
+    res.set(ACCESS_TOKEN, accessToken);
     return res.status(OK).json(updateRes);
   }
   catch(error: any) {
@@ -96,6 +99,7 @@ module.exports.delete = async (req: any, res: any, next: Function): Promise<any>
     let formId: string = req.params.formId;
     let form: Form = new Form();
     let deletedId: string = await form.delete(userId, formId);
+    res.set(ACCESS_TOKEN, accessToken);
     return res.status(OK).json({deletedId: deletedId});
   }
   catch(error: any) {
@@ -111,8 +115,6 @@ module.exports.delete = async (req: any, res: any, next: Function): Promise<any>
 */
 module.exports.handleSubmit = async (req: any, res: any, next: Function): Promise<any> => {
   try {
-    let userId: string = Auth.decodeAccessToken(req.header(ACCESS_TOKEN));
-    let accessToken: string = await Auth.refreshAccessToken(userId, req.header(ACCESS_TOKEN));
     let formId: string = req.params.formId;
     let body = req.body;
     let form: Form = new Form();

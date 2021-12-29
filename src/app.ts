@@ -12,12 +12,12 @@ const app = express();
 app.use(express.json());
 
 // api routes
-app.use('/api', apiRouter.routes);
+app.use("/api", apiRouter.routes);
 
 // catch unknown routes
 app.use((req: any, res: any, next: Function) => {
   res.status(NOT_FOUND).json({
-    message: 'Unknown resource'
+    message: "Unknown resource"
   });
 });
 

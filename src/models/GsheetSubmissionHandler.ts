@@ -84,7 +84,8 @@ class GsheetSubmissionHandler implements SubmissionHandler {
       }
     }
     catch(error) {
-      throw new InvalidFieldError("Error: Could not access your Google Sheet. Either the sheet id you provided is invalid or you did not provide edit access to " + process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL);
+      //throw new InvalidFieldError("Error: Could not access your Google Sheet. Either the sheet id you provided is invalid or you did not provide edit access to " + process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL);
+      throw(error);
     }
   };
 
@@ -106,7 +107,8 @@ class GsheetSubmissionHandler implements SubmissionHandler {
       sheet.addRow(values);
     }
     catch(error) {
-      throw new InvalidFieldError("Error: Could not access your Google Sheet. Either the sheet id you provided is invalid or you did not provide edit access to " + process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL);
+      //throw new InvalidFieldError("Error: Could not access your Google Sheet. Either the sheet id you provided is invalid or you did not provide edit access to " + process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL);
+      throw(error);
     }
   }
 }

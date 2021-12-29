@@ -88,7 +88,7 @@ class Form {
     }
     updateBody.lastModified = new Date().getTime();
     await cf.update(id, "forms", updateBody);
-    return fields;
+    return updateBody;
   }
 
   async delete(userId: string, id: string): Promise<string> {
@@ -108,11 +108,22 @@ class Form {
     /*
       formData should be in the format: {id: {name: <string>, value: <string>}}
     */
+    if(form.elements.length == 0) {
+      throw new InvalidFieldError("Cannot submit form because it does not contain any elements");
+    }
     let parsedFormData: json[] = [];
     for(var i: number = 0; i < form.elements.length; i++) {
       let elementId: string = form.elements[i].id;
+      // Check that formSubmission key-value pairs contain the proper data
       if(formSubmission[elementId] === undefined || formSubmission[elementId].name === undefined || formSubmission[elementId].value === undefined) {
-        throw new InvalidFieldError("Form submission data is not formatted correctly");
+        throw new InvalidFieldError("Form submission data is missing an element or is not formatted correctly");
+      }
+      // Check that elements in form correspond to names of formSubmission data
+      if(form.elements[i].name !== formSubmission[elementId].name) {
+        throw new InvalidFieldError(formSubmission[elementId].name + " does not have a corresponding form element");
+      }
+      if(formSubmission[elementId].value.trim().length == 0 && form.elements[i].required) {
+        throw new Error(formSubmission[elementId].name + " is a requried field");
       }
       parsedFormData.push({id: elementId, name: formSubmission[elementId].name, value: formSubmission[elementId].value});
     }
@@ -135,12 +146,13 @@ class Form {
       submissionErrors: errors,
       data: parsedFormData
     });
+    cf.update(form.id, "forms", form);
     return {submissionErrors: errors, form: form};
   }
 
-  private doesUserOwnForm(userId: string, formId: string): Promise<boolean> {
+  private async doesUserOwnForm(userId: string, formId: string): Promise<boolean> {
     let form: json = await this.getByFormId(formId);
-    if(Object.keys(form) == 0) {
+    if(Object.keys(form).length == 0) {
       throw new FormNotFoundError();
     }
     return form.userId === userId;

@@ -76,6 +76,18 @@ class CloudFirestore implements DataAccess {
     return id;
   }
 
+  async deleteMultiple(deleteKey: string, collection: string, key: string, filterCond: string, value: any): Promise<string[]> {
+    let deletedKeys: string[] = [];
+    let dataToDelete: json[] = await this.getByFilter(collection, key, filterCond, value);
+    let collectionRef = this.connection.collection(collection);
+    for(var i: number = 0; i < dataToDelete.length; i++) {
+      let docRef = collectionRef.doc(dataToDelete[i][deleteKey]);
+      await docRef.delete();
+      deletedKeys.push(dataToDelete[i][deleteKey]);
+    }
+    return deletedKeys;
+  }
+
   private initFirestoreConnection() {
     this.connection = firestore;
   }
