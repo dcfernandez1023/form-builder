@@ -6,8 +6,10 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "start": "ts-node index.ts",
+    "install-all": "cd ../frontend && echo ## INSTALLING FRONTEND DEPENDENCIES ## && npm install && cd ../server && echo ## INSTALLING BACKEND DEPENDENCIES ## && npm install",
     "build": "tsc",
-    "build-run": "npm run build && cd dist && node index.js"
+    "build-all": "cd ../frontend && echo ## BUILDING REACT FRONTEND ## && npm install && npm run build && cd ../server && echo ## BUILDING EXPRESS BACKEND ## && npm install && npm run build",
+    "build-and-run-all": "npm run build-all && cd dist && node index.js"
   },
   "keywords": [],
   "author": "",

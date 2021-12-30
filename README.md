@@ -4,6 +4,11 @@ Create and host forms without writing any code. Form submissions can be configur
 - Google Sheets
 - REST API
 
+## Usage
+- To install packages for both the frontend and backend, navigate to /server and run `npm run install-all`
+- To build both the frontend and backend, navigate to /server and run `npm run build-all`
+- To build and run both the frontend and backend simultaneously, navigate to /server and run `npm run build-and-run-all`
+
 ## API
 
 ### User
