@@ -1,5 +1,5 @@
 .env
 
-/dist
-/node_modules
-/firebase_key
+dist
+node_modules
+firebase_key
