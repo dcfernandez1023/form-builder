@@ -14,16 +14,18 @@ app.use(express.json());
 // api routes
 app.use("/api", apiRouter.routes);
 
+// server static frontend files
+ app.use(express.static(path.resolve("./") + "../../../frontend/build"));
+
 // catch unknown routes
-app.use((req: any, res: any, next: Function) => {
-  res.status(NOT_FOUND).json({
-    message: "Unknown resource"
-  });
-});
+// app.use((req: any, res: any, next: Function) => {
+//   res.status(NOT_FOUND).json({
+//     message: "Unknown resource"
+//   });
+// });
 
 // catch errors
 app.use((error: any, req: any, res: any, next: Function): any | void => {
-  console.log(error.stack);
   if (error.statusCode) {
     return res.status(error.statusCode).json({
       message: error.message

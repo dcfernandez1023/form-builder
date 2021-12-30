@@ -7,7 +7,7 @@ interface SubmissionHandler {
 
   getConfig(): json;
   validateConfig(config: json): boolean;
-  async executeSubmit(formId: string, formData: json);
+  executeSubmit(formId: string, formData: json): void;
 }
 
 

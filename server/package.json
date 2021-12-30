@@ -6,7 +6,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "start": "ts-node index.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "build-run": "npm run build && cd dist && node index.js"
   },
   "keywords": [],
   "author": "",

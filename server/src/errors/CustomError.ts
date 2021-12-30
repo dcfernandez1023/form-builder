@@ -9,8 +9,6 @@ abstract class CustomError extends Error {
     super(message);
     this.message = message === undefined ? "Oops... An unexpected error occurred" : message;
     this.statusCode = statusCode === undefined ? INTERNAL_SERVER_ERROR : statusCode;
-    console.log(this.message);
-    console.log(this.statusCode);
   }
 }
 
