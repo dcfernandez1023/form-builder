@@ -8,9 +8,9 @@ Create and host forms without writing any code. Form submissions can be configur
 
 ### User
 
-<u> GET </u>
+#### <u> GET </u>
 
-`/api/user/getUser`
+#### `/api/user/getUser`
 
     Required Request Headers: {
       "accessToken": <string>
@@ -28,9 +28,9 @@ Create and host forms without writing any code. Form submissions can be configur
       "dateCreated": <number>
     }
 
-<u> POST </u>
+#### <u> POST </u>
 
-`/api/user/register`
+#### `/api/user/register`
 
     Request Body: {
       "email": <string>
@@ -51,7 +51,7 @@ Create and host forms without writing any code. Form submissions can be configur
       "dateCreated": <number>
     }
 
-`/api/user/login`
+#### `/api/user/login`
 
     Request Body: {
       "email": <string>,
@@ -62,13 +62,13 @@ Create and host forms without writing any code. Form submissions can be configur
       "accessToken": <string>
     }
 
-`/api/user/forgotPassword`
+#### `/api/user/forgotPassword`
 
     Request Body: {
       "email": <string>
     }
 
-`/api/user/refreshAccessToken`
+#### `/api/user/refreshAccessToken`
 
     Required Request Headers: {
       "accessToken": <string>
@@ -78,7 +78,7 @@ Create and host forms without writing any code. Form submissions can be configur
       "accessToken": <string>
     }
 
-`api/user/resetPassowrd`
+#### `api/user/resetPassowrd`
 
     Request Body: {
       "email": <string>,
@@ -86,9 +86,9 @@ Create and host forms without writing any code. Form submissions can be configur
       "verificationToken": <string>
     }
 
-`/api/user/updateFields`
+#### `/api/user/updateFields`
 
-<b> Note: </b> <i> Request body can contain some or all fields of the User object. The fields `id` and `dateCreated` are protected fields and cannot be updated, so they will not be updated if included. The response body will return only the fields that were updated, which will only be `email`, `firstName`, and `lastName` at most. </i>
+<b> Note: </b> <i> Request body can contain some or all fields of the User object. The fields `id` and `dateCreated` are protected fields and cannot be updated, so they will not be updated if included. The response body will return only the fields that can be updated and if they included in the request body. </i>
 
     Required Request Headers: {
       "accessToken": <string>
@@ -114,7 +114,7 @@ Create and host forms without writing any code. Form submissions can be configur
       "lastName": <string>
     }
 
-`/api/user/delete`
+#### `/api/user/delete`
 
     Required Request Headers: {
       "accessToken": <string>
@@ -134,20 +134,139 @@ Create and host forms without writing any code. Form submissions can be configur
 
 ### Form
 
-<u> GET </u>
+#### <u> GET </u>
 
-`/api/form/getForms`
+#### `/api/form/getForms`
 
-`/api/form/getForm/:formId`
+    Required Request Headers: {
+      "accessToken": <string>
+    }
+    --
+    Response Header: {
+      "accessToken": <string>
+    }
 
-<u> POST </u>
+    Response Body: [
+      {
+        "id": <string>,
+        "userId": <string>,
+        "title": <string>,
+        "dateCreated": <number>,
+        "lastModified": <number>,
+        "isPublished": <boolean>,
+        "accessKey": <string>,
+        "elements": [<json>],
+        "submissions": [<json>],
+        "submissionHandlers": <json>
+      },
+      ...
+    ]
 
-`/api/form/createNew`
+#### `/api/form/getForm/:formId`
 
-`/api/form/updateFields/:formId`
+    Required Request Headers: {
+      "accessToken": <string>
+    }
+    --
+    Response Header: {
+      "accessToken": <string>
+    }
 
-`/api/form/handleSubmit/:formId`
+    Response Body: {
+        "id": <string>,
+        "userId": <string>,
+        "title": <string>,
+        "dateCreated": <number>,
+        "lastModified": <number>,
+        "isPublished": <boolean>,
+        "accessKey": <string>,
+        "elements": [<json>],
+        "submissions": [<json>],
+        "submissionHandlers": <json>
+      }
 
-<u> DELETE </u>
+#### <u> POST </u>
 
-`/api/form/delete/:formId`
+#### `/api/form/createNew`
+
+    Required Request Headers: {
+      "accessToken": <string>
+    }
+
+    Request Body: {
+      "title": <string>
+    }
+    --
+    Response Header: {
+      "accessToken": <string>
+    }    
+
+    Response Body: {
+        "id": <string>,
+        "userId": <string>,
+        "title": <string>,
+        "dateCreated": <number>,
+        "lastModified": <number>,
+        "isPublished": <boolean>,
+        "accessKey": <string>,
+        "elements": [<json>],
+        "submissions": [<json>],
+        "submissionHandlers": <json>
+      }
+
+#### `/api/form/updateFields/:formId`
+
+<b> Note: </b> <i> Request body can contain some or all fields of the Form object. The fields `id`, `userId`, `dateCreated`, and `lastModified` are protected fields and cannot be updated, so they will not be updated if included. The response body will return only the fields that can be updated and were included in the request body. </i>
+
+    Required Request Headers: {
+      "accessToken": <string>
+    }
+
+    Request Body: {
+      "id": <string>,
+      "userId": <string>,
+      "title": <string>,
+      "dateCreated": <number>,
+      "lastModified": <number>,
+      "isPublished": <boolean>,
+      "accessKey": <string>,
+      "elements": [<json>],
+      "submissions": [<json>],
+      "submissionHandlers": <json>
+    }
+    --    
+    Response Header: {
+      "accessToken": <string>
+    }
+
+    Response Body: {
+      "title": <string>,
+      "isPublished": <boolean>,
+      "accessKey": <string>,
+      "elements": [<json>],
+      "submissions": [<json>],
+      "submissionHandlers": <json>
+    }
+
+#### `/api/form/handleSubmit/:formId`
+
+    Request Body: {
+      "formSubmission": {
+        {
+          <id: string>: {"name": <string>, "value": <string>},
+          ...
+        }
+      }
+    }
+
+#### <u> DELETE </u>
+
+#### `/api/form/delete/:formId`
+
+    Request Headers: {
+      "accessToken": <string>
+    }
+    --
+    Response Header: {
+      "accessToken": <string>
+    }

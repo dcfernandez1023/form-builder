@@ -13,7 +13,6 @@ require("dotenv").config();
 
 class Auth {
   static async register(userId: string, email: string, password: string): Promise<string> {
-    // let cf: CloudFirestore = new CloudFirestore();
     const hashedPassword: string = await bcrypt.hash(password, 10);
     const userCredentials = {id: userId, email: email, password: hashedPassword};
     cf.insert(userId, "credentials", userCredentials);
@@ -21,7 +20,6 @@ class Auth {
   }
 
   static async login(email: string, password: string): Promise<string> {
-    // let cf: CloudFirestore = new CloudFirestore();
     let userCredentials: json[] = await cf.getByFilter("credentials", "email", "==", email);
     if(userCredentials.length != 1) {
       throw new EmailOrPasswordInvalidError();

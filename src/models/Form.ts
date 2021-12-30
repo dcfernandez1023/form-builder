@@ -45,8 +45,16 @@ class Form {
   }
 
   static async createNew(userId: string, title: string): Promise<json> {
+    if(title === undefined) {
+      throw new InvalidFieldError();
+    }
+    if(typeof title !== "string") {
+      throw new InvalidFieldError();
+    }
+    if(title.trim().length == 0) {
+      throw new InvalidFieldError();
+    }
     let date: Date = new Date();
-    // let cf: CloudFirestore = new CloudFirestore();
     let userData = await cf.getByFilter("users", "id", "==", userId);
     if(userData.length != 1) {
       throw new UserDoesNotExistError();

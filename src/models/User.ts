@@ -72,7 +72,15 @@ class User {
   }
 
   static async createNew(email: string, password: string, firstName: string, lastName: string): Promise<json> {
-    // let cf: CloudFirestore = new CloudFirestore();
+    if(email === undefined || password === undefined || firstName === undefined || lastName === undefined) {
+      throw new InvalidFieldError();
+    }
+    if(typeof email !== "string" || typeof password !== "string" || typeof firstName !== "string" || typeof lastName !== "string") {
+      throw new InvalidFieldError();
+    }
+    if(email.trim().length == 0 || password.trim().length == 0 || firstName.trim().length == 0 || lastName.trim().length == 0) {
+      throw new InvalidFieldError();
+    }
     if(await User.doesUserExist(email)) {
       throw new UserAlreadyExistsError();
     }
@@ -115,6 +123,9 @@ class User {
         continue;
       }
       if(!this.hasOwnProperty(key) || typeof (this as json)[key] !== typeof fields[key]) {
+        return {};
+      }
+      if(fields[key].trim().length == 0) {
         return {};
       }
       updateBody[key] = fields[key];
