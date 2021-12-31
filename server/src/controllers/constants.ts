@@ -1,7 +1,7 @@
 import { json } from "../models/Json";
 
 
-const ACCESS_TOKEN: string = "accessToken";
+const ACCESS_TOKEN: string = "access-token";
 const SUCCESS_MESSAGE: json = {message: "Success"};
 
 

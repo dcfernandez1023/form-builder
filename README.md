@@ -83,7 +83,7 @@ Create and host forms without writing any code. Form submissions can be configur
       "accessToken": <string>
     }
 
-#### `api/user/resetPassowrd`
+#### `/api/user/resetPassowrd`
 
     Request Body: {
       "email": <string>,

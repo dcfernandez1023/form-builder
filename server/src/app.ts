@@ -1,4 +1,5 @@
 import express from "express";
+const cors = require("cors");
 const path = require('path');
 
 const { NOT_FOUND, INTERNAL_SERVER_ERROR } = require('http-status-codes');
@@ -7,6 +8,12 @@ const { NOT_FOUND, INTERNAL_SERVER_ERROR } = require('http-status-codes');
 // initialize router and app
 const apiRouter = require('./routes/apiRoutes/index');
 const app = express();
+
+// enable CORS
+let corsOptions = {
+  exposedHeaders: "access-token"
+};
+app.use(cors(corsOptions));
 
 // app config
 app.use(express.json());
