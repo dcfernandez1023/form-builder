@@ -19,6 +19,7 @@ import AppNavbar from "./components/AppNavbar";
 import ErrorComponent from "./components/ErrorComponent";
 import Main from "./Main";
 import NotFound from "./components/NotFound";
+import FormBuilder from "./components/FormBuilder";
 
 const AUTH = require("./controllers/auth");
 
@@ -28,7 +29,7 @@ function App() {
   const[componentError, setComponentError] = useState();
 
   useEffect(() => {
-    AUTH.getUser(setUser, setComponentError);
+    AUTH.getUser(setUser, () => {setUser(null)});
   }, []);
 
   if(componentError !== undefined) {
@@ -36,18 +37,20 @@ function App() {
       <ErrorComponent message={componentError.message}/>
     );
   }
+  console.log("In app");
   return (
     <Container fluid>
-      <AppNavbar userInfo={user} />
+      <AppNavbar user={user} />
       {user === undefined ?
         <div style={{marginTop: "30px", textAlign: "center"}}>
-          <Spinner animation="border" />
+          <Spinner animation="grow" />
         </div>
       :
         <div>
           <Router>
             <Routes>
-              <Route path="/" element={<Main user={user} />} />
+              <Route path="/" element={<Main user={user} setError={setComponentError} />} />
+              <Route path="/formBuilder/:formId" element={<FormBuilder user={user} setError={setComponentError} />} />
               <Route path="*" element={<NotFound />}/>
             </Routes>
           </Router>

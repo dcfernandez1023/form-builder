@@ -1,5 +1,5 @@
 /**
-  Methods to interface with server REST APIs
+  Methods to interface with server User/Auth REST APIs
 */
 
 import axios from "axios";
@@ -78,7 +78,7 @@ export const getUser = (callback, onError) => {
         }
       })
       .catch((error) => {
-        callback(null, error);
+        onError(error);
       });
   }
   catch(error) {
@@ -101,7 +101,7 @@ export const isLoggedIn = (callback, onError) => {
       return;
     }
     let headers = {[accessTokenHeader]: token};
-    axios.post(baseEndpoint + "/refreshAccessToken", {}, headers)
+    axios.post(baseEndpoint + "/refreshAccessToken", {}, {headers: headers})
       .then((res) => {
         if(res.status == 200) {
           callback(true);

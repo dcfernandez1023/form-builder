@@ -5,11 +5,13 @@ import {
   Col
 } from 'react-bootstrap';
 import Login from "./components/Login";
+import Home from "./components/Home";
 
 
 /**
   Props:
     * user
+    * setError
 */
 const Main = (props) => {
   if(props.user === null) {
@@ -18,7 +20,7 @@ const Main = (props) => {
     );
   }
   return (
-    <div> Forms </div>
+    <Home setError={props.setError} />
   );
 }
 

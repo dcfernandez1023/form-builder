@@ -12,7 +12,7 @@ const NotFound = () => {
       <br/>
       <Row>
         <Col style={{textAlign: "center"}}>
-          <h1> The page you are looking for does not exist </h1>
+          <h3> The page you are looking for does not exist </h3>
         </Col>
       </Row>
       <br/>
@@ -21,7 +21,7 @@ const NotFound = () => {
           <Figure>
             <Figure.Image
               width={600}
-              src="not_found.jpg"
+              src="/not_found.jpg"
             />
           </Figure>
         </Col>
