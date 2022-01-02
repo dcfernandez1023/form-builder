@@ -12,6 +12,42 @@ const auth = require("./auth");
 
 
 /**
+  Updates a form by id. The callback parameter is called in the follinwg ways:
+    * callback(form) - if successful
+    * callback(null, message) - if token is not found or res.status != 200
+*/
+export const updateForm = (formId, form, callback, onError) => {
+  try {
+    let token = auth.getAccessToken();
+    if(token === null) {
+      callback(null, "Token not found");
+      return;
+    }
+    let headers = {[accessTokenHeader]: token};
+    axios.post(baseEndpoint + "/updateFields/" + formId, {fields: form}, {headers: headers})
+      .then((res) => {
+        if(res.status == 200) {
+          auth.storeAccessToken(res.headers[accessTokenHeader]);
+          for(var key in res.data) {
+            form[key] = res.data[key];
+          }
+          callback(form);
+        }
+        else {
+          callback(null, "Server failed to create form");
+        }
+      })
+      .catch((error) => {
+        onError(error);
+      });
+  }
+  catch(error) {
+    onError(error);
+  }
+}
+
+
+/**
   Gets a form by id. The callback parameter is called in the follinwg ways:
     * callback(form) - if successful
     * callback(null, message) - if token is not found or res.status != 200

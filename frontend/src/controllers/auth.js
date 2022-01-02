@@ -11,6 +11,14 @@ const accessTokenHeader = constants.ACCESS_TOKEN_HEADER;
 
 
 /**
+  Logs the user out
+*/
+export const logout = () => {
+  storeAccessToken("");
+  window.location.href = "/";
+}
+
+/**
   Logs the user in. Callback parameter will be called in the following ways:
     * callback(true) - if login successful
     * callback(false, serverMessage) - if login failed

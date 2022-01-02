@@ -89,13 +89,12 @@ const ElementSelector = (props) => {
         <ListGroup variant="flush">
           {form.elements.map((element, index) => {
             return (
-              <Row>
+              <Row key={element.id + "-element-list"}>
                 <Col xs={10}>
                   <ListGroup.Item
                     style={{border: "0px"}}
                     action
                     variant={props.selectedElement !== undefined && props.selectedElement.id === element.id ? "warning" : ""}
-                    key={element.id + "-element-list"}
                     onClick={() => {selectElement(element, index)}}
                   >
                     <Row>

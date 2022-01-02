@@ -12,6 +12,7 @@ import {
 /**
   Props:
     * user
+    * logout
 */
 const AppNavbar = (props) => {
   return (
@@ -56,7 +57,7 @@ const AppNavbar = (props) => {
                       <ListGroup.Item action>
                         Account Settings
                       </ListGroup.Item>
-                      <ListGroup.Item action>
+                      <ListGroup.Item action onClick={props.logout}>
                         Signout
                       </ListGroup.Item>
                     </ListGroup>

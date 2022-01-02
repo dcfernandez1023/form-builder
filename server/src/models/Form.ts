@@ -78,8 +78,13 @@ class Form {
     return await cf.getByFilter("forms", "userId", "==", userId);
   }
 
-  async getByFormId(id: string): Promise<json> {
-    let formData: json[] = await cf.getByFilter("forms", "id", "==", id);
+  async getByFormId(id: string, userId: string): Promise<json> {
+    let formData: json[] = await cf.getByFilters(
+      "forms",
+      ["id", "userId"],
+      ["==", "=="],
+      [id, userId]
+    );
     if(formData.length != 1) {
       return {};
     }
@@ -159,7 +164,7 @@ class Form {
   }
 
   private async doesUserOwnForm(userId: string, formId: string): Promise<boolean> {
-    let form: json = await this.getByFormId(formId);
+    let form: json = await this.getByFormId(formId, userId);
     if(Object.keys(form).length == 0) {
       throw new FormNotFoundError();
     }

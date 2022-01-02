@@ -42,7 +42,7 @@ const main = async () => {
 
   console.log("Get form by formId");
   try {
-    console.log(await form.getByFormId(formJson.id));
+    console.log(await form.getByFormId(formJson.id, user.id));
   }
   catch(error) {
     console.log(error);

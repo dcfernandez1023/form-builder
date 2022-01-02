@@ -26,7 +26,7 @@ export const elements: json = {
     id: "",
     type: "RADIO",
     name: "Radio",
-    mainLabel: "",
+    label: "Radio",
     label1: "",
     label2: "",
     value1: "",

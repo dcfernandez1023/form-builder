@@ -56,7 +56,6 @@ const FormRenderer = (props) => {
           <Row>
             {form.elements.map((element) => {
               let isSelected = (props.selectedElement !== undefined && element.id === props.selectedElement.id);
-              console.log(isSelected);
               return ElementUIFactory.getUIElement(element, isSelected);
             })}
           </Row>

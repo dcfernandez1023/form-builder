@@ -34,6 +34,7 @@ class ElementUIFactory {
           id={element.id}
           required={element.required}
           type="text"
+          placeholder={element.placeholder}
         />
       </Col>
     );
@@ -73,7 +74,7 @@ class ElementUIFactory {
         className="form-col-spacing"
         style={isSelected ? {backgroundColor: "#fff3cd"} : {} }
       >
-        <Form.Label style={{marginRight: "10px"}}> {element.mainLabel} </Form.Label>
+        <Form.Label style={{marginRight: "10px"}}> {element.label} </Form.Label>
         <Form.Check
           inline
           id={element.id + "radio1"}

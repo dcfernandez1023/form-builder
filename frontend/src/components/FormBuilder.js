@@ -4,7 +4,9 @@ import {
   Row,
   Col,
   Spinner,
-  Button
+  Button,
+  DropdownButton,
+  Dropdown
 } from 'react-bootstrap';
 import {
   BrowserRouter as Router,
@@ -30,6 +32,7 @@ const FormBuilder = (props) => {
   const[selectedElement, setSelectedElement] = useState();
   const[selectedIndex, setSelectedIndex] = useState(-1);
   const[isSaved, setIsSaved] = useState(true);
+  const[isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     getForm();
@@ -63,6 +66,29 @@ const FormBuilder = (props) => {
   const onChangeForm = (updatedForm) => {
     setForm(updatedForm);
     setIsSaved(false);
+    window.onbeforeunload = () => {
+      return "You have not saved your changes. Are you sure you want to leave?";
+    };
+  }
+
+  const saveForm = () => {
+    setIsSaving(true);
+    const callback = (data, message) => {
+      if(data === null) {
+        props.setError(new Error(message));
+      }
+      else {
+        setForm(data);
+      }
+      setIsSaved(true);
+      setIsSaving(false);
+      window.onbeforeunload = null;
+    }
+    const onError = (error) => {
+      window.onbeforeunload = null;
+      props.setError(error);
+    }
+    FORMS.updateForm(formId, form, callback, onError);
   }
 
   if(form === undefined) {
@@ -83,8 +109,21 @@ const FormBuilder = (props) => {
       {/* Action bar */}
       <Row>
         <Col style={{textAlign: "right"}}>
-          <Button variant="info" style={{marginRight: "10px"}}> Actions </Button>
-          <Button variant="info" disabled={isSaved}> Save </Button>
+          <Button variant="info" disabled={isSaved || isSaving} onClick={saveForm} style={{float: "right", marginLeft: "10px"}}>
+            {isSaving ?
+              <Spinner as="span" size="sm" animation="border" style={{marginRight: "8px"}}/>
+            :
+              <span></span>
+            }
+            Save
+           </Button>
+           <DropdownButton align="end" variant="info" style={{float: "right"}} title="Actions">
+             <Dropdown.Item> Edit Title </Dropdown.Item>
+             <Dropdown.Item> Publish Form </Dropdown.Item>
+             <Dropdown.Item> Submission Handlers </Dropdown.Item>
+             <Dropdown.Item> Analytics </Dropdown.Item>
+             <Dropdown.Item> Delete Form </Dropdown.Item>
+           </DropdownButton>
         </Col>
       </Row>
       <br/>

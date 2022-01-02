@@ -55,7 +55,7 @@ module.exports.getForm = async (req: any, res: any, next: Function): Promise<any
     let accessToken: string = await Auth.refreshAccessToken(userId, req.header(ACCESS_TOKEN));
     let formId: string = req.params.formId;
     let form: Form = new Form();
-    let formData: json = await form.getByFormId(formId);
+    let formData: json = await form.getByFormId(formId, userId);
     res.set(ACCESS_TOKEN, accessToken);
     return res.status(OK).json(formData);
   }

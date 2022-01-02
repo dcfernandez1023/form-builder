@@ -41,7 +41,7 @@ function App() {
 
   return (
     <div>
-      <AppNavbar user={user} />
+      <AppNavbar user={user} logout={AUTH.logout} />
       {user === undefined ?
         <div style={{marginTop: "30px", textAlign: "center"}}>
           <Spinner animation="grow" />
