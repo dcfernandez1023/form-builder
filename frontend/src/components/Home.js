@@ -57,7 +57,6 @@ const Home = (props) => {
     FORMS.getForms(onGetFormsResponse, props.setError);
   }, []);
 
-  console.log("in home");
   if(forms === undefined) {
     return (
       <div style={{marginTop: "30px", textAlign: "center"}}>

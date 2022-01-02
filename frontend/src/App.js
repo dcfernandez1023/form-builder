@@ -1,4 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "./App.css";
 
 import React, { useState, useEffect } from 'react';
 import {
@@ -37,9 +38,9 @@ function App() {
       <ErrorComponent message={componentError.message}/>
     );
   }
-  console.log("In app");
+
   return (
-    <Container fluid>
+    <div>
       <AppNavbar user={user} />
       {user === undefined ?
         <div style={{marginTop: "30px", textAlign: "center"}}>
@@ -56,7 +57,7 @@ function App() {
           </Router>
         </div>
       }
-    </Container>
+    </div>
   );
 }
 

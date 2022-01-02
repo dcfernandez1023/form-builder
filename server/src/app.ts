@@ -23,17 +23,9 @@ app.use("/api", apiRouter.routes);
 
 // server static frontend files
  app.use(express.static(path.resolve("./") + "../../../frontend/build"));
-
 app.get('*', (req,res) =>{
   res.sendFile(path.resolve("../../frontend/build/index.html"));
 });
-
-// serve static build to unknown routes and let react-router-dom handle from there
-// app.use((req: any, res: any, next: Function) => {
-//   res.status(NOT_FOUND).json({
-//     message: "Unknown resource"
-//   });
-// });
 
 // catch errors
 app.use((error: any, req: any, res: any, next: Function): any | void => {
