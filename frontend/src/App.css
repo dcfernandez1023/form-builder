@@ -7,7 +7,18 @@
     left: auto;
 }
 
+.form-title:hover {
+  background-color: #F4F6F6;
+  cursor: text;
+}
+
 .form-col-spacing {
   margin-bottom: 10px;
   padding-bottom: 10px;
+}
+
+.clipped {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }

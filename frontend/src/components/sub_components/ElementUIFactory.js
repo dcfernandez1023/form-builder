@@ -5,23 +5,23 @@ import {
 
 
 class ElementUIFactory {
-  static getUIElement(element, isSelected) {
+  static getUIElement(element, isSelected, onChange) {
     if(element.type === "INPUT") {
-      return ElementUIFactory.renderInput(element, isSelected);
+      return ElementUIFactory.renderInput(element, isSelected, onChange);
     }
     else if(element.type === "SELECT") {
-      return ElementUIFactory.renderSelect(element, isSelected);
+      return ElementUIFactory.renderSelect(element, isSelected, onChange);
     }
     else if(element.type === "RADIO") {
-      return ElementUIFactory.renderRadio(element, isSelected);
+      return ElementUIFactory.renderRadio(element, isSelected, onChange);
     }
     else if(element.type === "TEXTAREA") {
-      return ElementUIFactory.renderTextarea(element, isSelected);
+      return ElementUIFactory.renderTextarea(element, isSelected, onChange);
     }
     return <div> No such element </div>;
   }
 
-  static renderInput(element, isSelected) {
+  static renderInput(element, isSelected, onChange) {
     return (
       <Col
         className="form-col-spacing"
@@ -35,12 +35,13 @@ class ElementUIFactory {
           required={element.required}
           type="text"
           placeholder={element.placeholder}
+          onChange={(e) => {onChange(element.id, element.name, e.target.value)}}
         />
       </Col>
     );
   }
 
-  static renderSelect(element, isSelected) {
+  static renderSelect(element, isSelected, onChange) {
     return (
       <Col
         className="form-col-spacing"
@@ -52,6 +53,7 @@ class ElementUIFactory {
         <Form.Select
           id={element.id}
           required={element.required}
+          onChange={(e) => {onChange(element.id, element.name, e.target.value)}}
         >
           <option value=""> Select </option>
           {element.options.map((option, index) => {
@@ -66,7 +68,7 @@ class ElementUIFactory {
     );
   }
 
-  static renderRadio(element, isSelected) {
+  static renderRadio(element, isSelected, onChange) {
     return (
       <Col
         md={element.columns}
@@ -83,6 +85,7 @@ class ElementUIFactory {
           name={"radioGroup-" + element.id}
           value={element.value1}
           required={element.required}
+          onChange={(e) => {onChange(element.id, element.name, e.target.value)}}
         />
         <Form.Check
           inline
@@ -92,12 +95,13 @@ class ElementUIFactory {
           name={"radioGroup-" + element.id}
           value={element.value2}
           required={element.required}
+          onChange={(e) => {onChange(element.id, element.name, e.target.value)}}
         />
       </Col>
     );
   }
 
-  static renderTextarea(element, isSelected) {
+  static renderTextarea(element, isSelected, onChange) {
     return (
       <Col
         md={element.columns}
@@ -112,6 +116,7 @@ class ElementUIFactory {
           rows={element.rows}
           required={element.required}
           placeholder={element.placeholder}
+          onChange={(e) => {onChange(element.id, element.name, e.target.value)}}
         />
       </Col>
     );

@@ -41,7 +41,7 @@ class Form {
     this.accessKey = "";
     this.elements = [];
     this.submissions = [];
-    this.submissionHandlers = {};
+    this.submissionHandlers = [];
   }
 
   static async createNew(userId: string, title: string): Promise<json> {
@@ -69,7 +69,11 @@ class Form {
       accessKey: "",
       elements: [],
       submissions: [],
-      submissionHandlers: []
+      submissionHandlers: [
+        {type: "Email", isEnabled: false, receivers: ""},
+        {type: "REST", isEnabled: false, endpoint: ""},
+        {type: "Gsheet", isEnabled: false, gsheetId: ""}
+      ]
     };
     return await cf.insert(newForm.id, "forms", newForm);
   }
@@ -257,6 +261,9 @@ class Form {
   }
 
   private validateSubmissionHandlers(handlers: json[]): boolean {
+    if(handlers.length != 3) {
+      throw new InvalidFieldError("3 submission handlers are required but received " + handlers.length.toString());
+    }
     let handlerTypes: json = {};
     for(var i: number = 0; i < handlers.length; i++) {
       let config: json = handlers[i];

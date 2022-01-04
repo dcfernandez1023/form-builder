@@ -7,7 +7,7 @@ import { EmailSender } from "./EmailSender";
 class EmailSubmissionHandler implements SubmissionHandler {
   type: string = "Email";
   isEnabled: boolean = false;
-  receivers: string[] = [];
+  receivers: string = "";
 
   constructor(config: json) {
     if(!this.validateConfig(config)) {
@@ -54,7 +54,7 @@ class EmailSubmissionHandler implements SubmissionHandler {
     }
     html += "</tr>";
     html += "</table>";
-    await EmailSender.sendEmail(this.receivers, "Form submission " + new Date().toLocaleDateString(), JSON.stringify(formData), html);
+    await EmailSender.sendEmail([this.receivers], "Form submission " + new Date().toLocaleDateString(), JSON.stringify(formData), html);
   }
 }
 

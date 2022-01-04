@@ -6,7 +6,8 @@ import {
   Spinner,
   Button,
   DropdownButton,
-  Dropdown
+  Dropdown,
+  Toast
 } from 'react-bootstrap';
 import {
   BrowserRouter as Router,
@@ -18,6 +19,8 @@ import NotFound from "./NotFound";
 import ElementSelector from "./sub_components/ElementSelector";
 import FormRenderer from "./sub_components/FormRenderer";
 import ElementEditor from "./sub_components/ElementEditor";
+import Preview from "./sub_components/Preview";
+import SubmissionHandlerModal from "./sub_components/SubmissionHandlerModal";
 const FORMS = require("../controllers/forms");
 
 
@@ -29,10 +32,14 @@ const FormBuilder = (props) => {
   let { formId } = useParams();
 
   const[form, setForm] = useState();
+  const[showNotification, setShowNotification] = useState(false);
+  const[notification, setNotification] = useState("");
   const[selectedElement, setSelectedElement] = useState();
   const[selectedIndex, setSelectedIndex] = useState(-1);
   const[isSaved, setIsSaved] = useState(true);
   const[isSaving, setIsSaving] = useState(false);
+  const[isPreview, setIsPreview] = useState(false);
+  const[showSubModal, setShowSubModal] = useState(false);
 
   useEffect(() => {
     getForm();
@@ -71,7 +78,9 @@ const FormBuilder = (props) => {
     };
   }
 
-  const saveForm = () => {
+  const handlePublish = () => {
+    let formCopy = JSON.parse(JSON.stringify(form));
+    formCopy.isPublished = !formCopy.isPublished;
     setIsSaving(true);
     const callback = (data, message) => {
       if(data === null) {
@@ -79,6 +88,12 @@ const FormBuilder = (props) => {
       }
       else {
         setForm(data);
+        if(formCopy.isPublished) {
+          alertNotification("Form is now published ✔️");
+        }
+        else {
+          alertNotification("Form is no longer published ✔️");
+        }
       }
       setIsSaved(true);
       setIsSaving(false);
@@ -88,7 +103,50 @@ const FormBuilder = (props) => {
       window.onbeforeunload = null;
       props.setError(error);
     }
+    FORMS.updateForm(formId, formCopy, callback, onError);
+  }
+
+  const saveForm = (e, componentCallback) => {
+    setIsSaving(true);
+    const callback = (data, message) => {
+      if(data === null) {
+        props.setError(new Error(message));
+      }
+      else {
+        setForm(data);
+        alertNotification("Form saved successfully ✔️");
+      }
+      setIsSaved(true);
+      setIsSaving(false);
+      console.log(componentCallback);
+      if(componentCallback !== undefined && componentCallback !== null) {
+        componentCallback();
+      }
+      window.onbeforeunload = null;
+    }
+    const onError = (error) => {
+      window.onbeforeunload = null;
+      props.setError(error);
+    }
     FORMS.updateForm(formId, form, callback, onError);
+  }
+
+  const alertNotification = (msg) => {
+    setNotification(msg);
+    setShowNotification(true);
+  }
+
+  const hideNotification = () => {
+    setNotification("");
+    setShowNotification(false);
+  }
+
+  const enterPreview = () => {
+    setIsPreview(true);
+  }
+
+  const exitPreview = () => {
+    setIsPreview(false);
   }
 
   if(form === undefined) {
@@ -105,43 +163,74 @@ const FormBuilder = (props) => {
   }
   return (
     <Container fluid>
+      <SubmissionHandlerModal
+        form={form}
+        show={showSubModal}
+        isLoading={isSaving}
+        onChangeForm={onChangeForm}
+        onClose={() => setShowSubModal(false)}
+        onSubmit={saveForm}
+      />
       <br/>
       {/* Action bar */}
-      <Row>
-        <Col style={{textAlign: "right"}}>
-          <Button variant="info" disabled={isSaved || isSaving} onClick={saveForm} style={{float: "right", marginLeft: "10px"}}>
-            {isSaving ?
-              <Spinner as="span" size="sm" animation="border" style={{marginRight: "8px"}}/>
-            :
-              <span></span>
-            }
-            Save
-           </Button>
-           <DropdownButton align="end" variant="info" style={{float: "right"}} title="Actions">
-             <Dropdown.Item> Edit Title </Dropdown.Item>
-             <Dropdown.Item> Publish Form </Dropdown.Item>
-             <Dropdown.Item> Submission Handlers </Dropdown.Item>
-             <Dropdown.Item> Analytics </Dropdown.Item>
-             <Dropdown.Item> Delete Form </Dropdown.Item>
-           </DropdownButton>
-        </Col>
-      </Row>
-      <br/>
-      {/* Form editor */}
-      <Row style={{minHeight: "50vh"}}>
-        {/* Element selector */}
-        <Col xs={2} style={{borderRight: "1px solid lightGray"}}>
-          <ElementSelector form={form} selectedElement={selectedElement} onSelectElement={setSelectedElement} onChangeForm={onChangeForm} setSelectedIndex={setSelectedIndex} />
-        </Col>
-        {/* Form renderer */}
-        <Col xs={8}>
-          <FormRenderer form={form} selectedElement={selectedElement} />
-        </Col>
-        {/* Element editor */}
-        <Col xs={2} style={{borderLeft: "1px solid lightGray"}}>
-          <ElementEditor form={form} onChangeForm={onChangeForm} selectedElement={selectedElement} onChangeSelectedElement={setSelectedElement} selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} />
-        </Col>
-      </Row>
+      {isPreview ?
+        <Row>
+          <Col>
+            <Preview form={form} onBack={exitPreview} />
+          </Col>
+        </Row>
+      :
+        <div>
+          <Row>
+            <Col>
+              <Toast onClose={hideNotification} show={showNotification} delay={5000} autohide>
+                <Toast.Header>
+                  <img
+                    src="/bulb.png"
+                    className="rounded me-2"
+                    alt=""
+                  />
+                  <strong className="me-auto"> Action Status </strong>
+                </Toast.Header>
+                <Toast.Body> {notification} </Toast.Body>
+              </Toast>
+            </Col>
+            <Col style={{textAlign: "right"}}>
+              <Button variant="info" disabled={isSaved || isSaving} onClick={saveForm} style={{float: "right", marginLeft: "10px"}}>
+                {isSaving ?
+                  <Spinner as="span" size="sm" animation="border" style={{marginRight: "8px"}}/>
+                :
+                  <span></span>
+                }
+                Save
+               </Button>
+               <DropdownButton align="end" variant="info" style={{float: "right"}} title="Actions">
+                 <Dropdown.Item onClick={enterPreview}> Preview </Dropdown.Item>
+                 <Dropdown.Item onClick={handlePublish}> {form.isPublished ? "Unpublish" : "Publish"} </Dropdown.Item>
+                 <Dropdown.Item> Analytics </Dropdown.Item>
+                 <Dropdown.Item onClick={() => setShowSubModal(true)}> Submission Handling </Dropdown.Item>
+                 <Dropdown.Item> Delete Form </Dropdown.Item>
+               </DropdownButton>
+            </Col>
+          </Row>
+          <br/>
+          {/* Form editor */}
+          <Row style={{minHeight: "50vh"}}>
+            {/* Element selector */}
+            <Col xs={2} style={{borderRight: "1px solid lightGray"}}>
+              <ElementSelector form={form} selectedElement={selectedElement} onSelectElement={setSelectedElement} onChangeForm={onChangeForm} setSelectedIndex={setSelectedIndex} />
+            </Col>
+            {/* Form renderer */}
+            <Col xs={8}>
+              <FormRenderer form={form} onChangeForm={onChangeForm} selectedElement={selectedElement} mode="building" onSubmit={() => {return;}}/>
+            </Col>
+            {/* Element editor */}
+            <Col xs={2} style={{borderLeft: "1px solid lightGray"}}>
+              <ElementEditor form={form} onChangeForm={onChangeForm} selectedElement={selectedElement} onChangeSelectedElement={setSelectedElement} selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} />
+            </Col>
+          </Row>
+        </div>
+      }
     </Container>
   );
 }

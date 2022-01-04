@@ -89,7 +89,7 @@ const ElementSelector = (props) => {
         <ListGroup variant="flush">
           {form.elements.map((element, index) => {
             return (
-              <Row key={element.id + "-element-list"}>
+              <Row key={element.id + "-element-list"} style={index != form.elements.length - 1 ? {borderBottom: "1px solid lightGray"} : {}}>
                 <Col xs={10}>
                   <ListGroup.Item
                     style={{border: "0px"}}
@@ -98,7 +98,7 @@ const ElementSelector = (props) => {
                     onClick={() => {selectElement(element, index)}}
                   >
                     <Row>
-                      <Col xs={10}>
+                      <Col xs={10} className="clipped">
                         {element.label}
                       </Col>
                     </Row>

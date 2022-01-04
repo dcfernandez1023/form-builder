@@ -39,7 +39,7 @@ const ElementEditor = (props) => {
     props.onChangeForm(formCopy);
   }
 
-  const moveUp = () => {
+  const moveDown = () => {
     let formCopy = JSON.parse(JSON.stringify(form));
     if(props.selectedIndex == formCopy.elements.length - 1) {
       return;
@@ -51,7 +51,7 @@ const ElementEditor = (props) => {
     props.setSelectedIndex(props.selectedIndex + 1);
   }
 
-  const moveDown = () => {
+  const moveUp = () => {
     let formCopy = JSON.parse(JSON.stringify(form));
     if(props.selectedIndex == 0) {
       return;
@@ -252,9 +252,9 @@ const ElementEditor = (props) => {
             <Form.Label>
               {field.display}
               <Button
-                style={{marginLeft: "8px", paddingTop: "3px", paddingBottom: "3px"}}
+                style={{marginLeft: "8px", paddingTop: "1px", paddingBottom: "1px"}}
                 size="sm"
-                variant="light"
+                variant="info"
                 onClick={addOptionToSelectedElement}
               >
                 +
@@ -286,7 +286,7 @@ const ElementEditor = (props) => {
                         }}
                       />
                     </Col>
-                    <Col xs={1} style={{textAlign: "right"}}>
+                    <Col xs={2} style={{textAlign: "right"}}>
                       <CloseButton
                         style={{marginTop: "40px", width: "6px", height: "6px"}}
                         size="sm"
