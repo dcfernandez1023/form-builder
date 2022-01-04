@@ -24,6 +24,7 @@ const SubmissionHandlerModal = (props) => {
   const[show, setShow] = useState(false);
   const[isLoading, setIsLoading] = useState(false);
   const[handlers, setHandlers] = useState({});
+  const[isSaved, setIsSaved] = useState(true);
 
   const EMAIL = "Email";
   const REST = "REST";
@@ -70,7 +71,7 @@ const SubmissionHandlerModal = (props) => {
   const flattenHandlers = (formHandlers) => {
     let flattenedHandlers = {};
     for(var i = 0; i < formHandlers.length; i++) {
-      flattenedHandlers[formHandlers[i].type] = formHandlers[i];
+      flattenedHandlers[formHandlers[i].type] = Object.assign({}, formHandlers[i]);
     }
     setHandlers(flattenedHandlers);
   }
@@ -79,42 +80,17 @@ const SubmissionHandlerModal = (props) => {
     return handlers[type] !== undefined && handlers[type].isEnabled;
   }
 
-  const getNewHandler = (type, isEnabled) => {
-    if(type === EMAIL) {
-      return {
-        type: EMAIL,
-        isEnabled: isEnabled,
-        receivers: ""
-      };
-    }
-    else if(type === REST) {
-      return {
-        type: REST,
-        isEnabled: isEnabled,
-        endpoint: ""
-      };
-    }
-    else if(type === GSHEET) {
-      return {
-        type: GSHEET,
-        isEnabled: isEnabled,
-        gsheetId: ""
-      };
-    }
-    return {};
+  const onClose = () => {
+    setIsSaved(true);
+    props.onClose();
   }
 
   const editHandler = (type, isEnabled, value) => {
-    // Adding new handler to form.submissionHandlers
-    let formCopy = JSON.parse(JSON.stringify(form));
-    let handler = null;
-    if(handlers[type] === undefined) {
-      handler = getNewHandler(type, isEnabled);
+    let handlersCopy = Object.assign({}, handlers);
+    let handler = handlersCopy[type];
+    if(isEnabled !== undefined) {
+      handler.isEnabled = isEnabled;
     }
-    else {
-      handler = handlers[type];
-    }
-    handler.isEnabled = isEnabled;
     if(value !== undefined) {
       if(type === EMAIL) {
         handler.receivers = value;
@@ -126,20 +102,26 @@ const SubmissionHandlerModal = (props) => {
         handler.gsheetId = value;
       }
     }
-    for(var i = 0; i < formCopy.submissionHandlers.length; i++) {
-      if(formCopy.submissionHandlers[i].type === type) {
-        formCopy.submissionHandlers[i] = handler;
-      }
+    setIsSaved(false);
+    setHandlers(handlersCopy);
+  }
+
+  const onSave = (e) => {
+    let newHandlers = [];
+    for(var key in handlers) {
+      newHandlers.push(Object.assign({}, handlers[key]));
     }
-    console.log(formCopy);
+    let formCopy = JSON.parse(JSON.stringify(form));
+    formCopy.submissionHandlers = newHandlers;
     props.onChangeForm(formCopy);
+    props.onSubmit(e, onClose, formCopy);
   }
 
   if(form === null || form === undefined) {
     return <div></div>;
   }
   return (
-    <Modal show={show} onHide={props.onClose} size="xl">
+    <Modal show={show} onHide={onClose} size="xl">
       <Modal.Header closeButton>
         <Modal.Title> Submission Handlers </Modal.Title>
       </Modal.Header>
@@ -199,10 +181,15 @@ const SubmissionHandlerModal = (props) => {
         </Row>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={props.onClose}>
+        <Button variant="secondary" onClick={onClose}>
           Close
         </Button>
-        <Button variant="success">
+        <Button variant="success" disabled={isSaved || props.isLoading} onClick={(e) => {onSave(e)}}>
+          {props.isLoading ?
+            <Spinner as="span" size="sm" animation="border" style={{marginRight: "8px"}}/>
+          :
+            <span></span>
+          }
           Save
         </Button>
       </Modal.Footer>

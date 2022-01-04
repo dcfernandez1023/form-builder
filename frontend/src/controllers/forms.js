@@ -12,6 +12,39 @@ const auth = require("./auth");
 
 
 /**
+  Deletes a form by id. The callback parameter is called in the follinwg ways:
+    * callback(formId) - if successful
+    * callback(null, message) - if token is not found or res.status != 200
+*/
+export const deleteForm = (formId, callback, onError) => {
+  try {
+    let token = auth.getAccessToken();
+    if(token === null) {
+      callback(null, "Token not found");
+      return;
+    }
+    let headers = {[accessTokenHeader]: token};
+    axios.delete(baseEndpoint + "/delete/" + formId, {headers: headers})
+      .then((res) => {
+        if(res.status == 200) {
+          auth.storeAccessToken(res.headers[accessTokenHeader]);
+          callback(res.data.deletedId);
+        }
+        else {
+          callback(null, "Server failed to create form");
+        }
+      })
+      .catch((error) => {
+        onError(error);
+      });
+  }
+  catch(error) {
+    onError(error);
+  }
+}
+
+
+/**
   Updates a form by id. The callback parameter is called in the follinwg ways:
     * callback(form) - if successful
     * callback(null, message) - if token is not found or res.status != 200
