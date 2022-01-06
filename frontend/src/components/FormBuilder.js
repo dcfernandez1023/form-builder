@@ -7,7 +7,9 @@ import {
   Button,
   DropdownButton,
   Dropdown,
-  Toast
+  Toast,
+  Modal,
+  Form
 } from 'react-bootstrap';
 import {
   BrowserRouter as Router,
@@ -22,6 +24,8 @@ import ElementEditor from "./sub_components/ElementEditor";
 import Preview from "./sub_components/Preview";
 import SubmissionHandlerModal from "./sub_components/SubmissionHandlerModal";
 import DeleteFormModal from "./sub_components/DeleteFormModal";
+import Analytics from "./sub_components/Analytics";
+import CustomModal from "./sub_components/CustomModal";
 const FORMS = require("../controllers/forms");
 
 
@@ -42,6 +46,8 @@ const FormBuilder = (props) => {
   const[isPreview, setIsPreview] = useState(false);
   const[showSubModal, setShowSubModal] = useState(false);
   const[showDeleteModal, setShowDeleteModal] = useState(false);
+  const[showAnalytics, setShowAnalytics] = useState(false);
+  const[showCustom, setShowCustom] = useState(false);
 
   useEffect(() => {
     getForm();
@@ -195,12 +201,25 @@ const FormBuilder = (props) => {
         onClose={() => setShowSubModal(false)}
         onSubmit={saveForm}
       />
-    <DeleteFormModal
-      show={showDeleteModal}
-      isLoading={isSaving}
-      onClose={() => {setShowDeleteModal(false)}}
-      onSubmit={deleteForm}
-    />
+      <DeleteFormModal
+        show={showDeleteModal}
+        isLoading={isSaving}
+        onClose={() => {setShowDeleteModal(false)}}
+        onSubmit={deleteForm}
+      />
+      <Analytics
+        form={form}
+        show={showAnalytics}
+        onClose={() => {setShowAnalytics(false)}}
+      />
+      <CustomModal
+        form={form}
+        show={showCustom}
+        isLoading={isSaving}
+        onChangeForm={onChangeForm}
+        onClose={() => {setShowCustom(false)}}
+        onSubmit={saveForm}
+      />
       <br/>
       {/* Action bar */}
       {isPreview ?
@@ -235,11 +254,12 @@ const FormBuilder = (props) => {
                 Save
                </Button>
                <DropdownButton align="end" variant="info" style={{float: "right"}} title="Actions">
-                 <Dropdown.Item onClick={enterPreview}> Preview </Dropdown.Item>
-                 <Dropdown.Item onClick={handlePublish}> {form.isPublished ? "Unpublish" : "Publish"} </Dropdown.Item>
-                 <Dropdown.Item> Analytics </Dropdown.Item>
-                 <Dropdown.Item onClick={() => setShowSubModal(true)}> Submission Handling </Dropdown.Item>
-                 <Dropdown.Item onClick={() => {setShowDeleteModal(true)}}> Delete </Dropdown.Item>
+                 <Dropdown.Item onClick={enterPreview}> 🔎 Preview </Dropdown.Item>
+                 <Dropdown.Item onClick={handlePublish}> {form.isPublished ? "❌ Unpublish" : "🌎 Publish"} </Dropdown.Item>
+                 <Dropdown.Item onClick={() => {setShowAnalytics(true)}}> 📈 Analytics </Dropdown.Item>
+                 <Dropdown.Item onClick={() => setShowSubModal(true)}> ➡️ Submission Handling </Dropdown.Item>
+                 <Dropdown.Item onClick={() => {setShowCustom(true)}}> 💡 Customize </Dropdown.Item>
+                 <Dropdown.Item onClick={() => {setShowDeleteModal(true)}}> 🗑️ Delet️e </Dropdown.Item>
                </DropdownButton>
             </Col>
           </Row>

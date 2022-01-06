@@ -12,6 +12,32 @@ const auth = require("./auth");
 
 
 /**
+  Handles a form submission a form by id. The callback parameter is called in the follinwg ways:
+    * callback(form) - if successful
+    * callback(null, message) - if token is not found or res.status != 200
+*/
+export const handleSubmit = (formId, formSubmission, callback, onError) => {
+  try {
+    axios.post(baseEndpoint + "/handleSubmit/" + formId, {formSubmission: formSubmission})
+      .then((res) => {
+        if(res.status == 200) {
+          callback(res.data.form);
+        }
+        else {
+          callback(null, "Server failed to submit form");
+        }
+      })
+      .catch((error) => {
+        onError(error);
+      });
+  }
+  catch(error) {
+    onError(error);
+  }
+}
+
+
+/**
   Deletes a form by id. The callback parameter is called in the follinwg ways:
     * callback(formId) - if successful
     * callback(null, message) - if token is not found or res.status != 200
@@ -31,7 +57,7 @@ export const deleteForm = (formId, callback, onError) => {
           callback(res.data.deletedId);
         }
         else {
-          callback(null, "Server failed to create form");
+          callback(null, "Server failed to delete form");
         }
       })
       .catch((error) => {
@@ -67,7 +93,7 @@ export const updateForm = (formId, form, callback, onError) => {
           callback(form);
         }
         else {
-          callback(null, "Server failed to create form");
+          callback(null, "Server failed to update form");
         }
       })
       .catch((error) => {
@@ -79,6 +105,30 @@ export const updateForm = (formId, form, callback, onError) => {
   }
 }
 
+/**
+  Gets a form by id. The callback parameter is called in the follinwg ways:
+    * callback(form) - if successful
+    * callback(null, message) - if token is not found or res.status != 200
+*/
+export const getPublishedForm = (formId, callback, onError) => {
+  try {
+    axios.get(baseEndpoint + "/getPublishedForm/" + formId)
+      .then((res) => {
+        if(res.status == 200) {
+          callback(res.data);
+        }
+        else {
+          callback(null, "Server failed to get published form");
+        }
+      })
+      .catch((error) => {
+        onError(error);
+      });
+  }
+  catch(error) {
+    onError(error);
+  }
+}
 
 /**
   Gets a form by id. The callback parameter is called in the follinwg ways:
@@ -100,7 +150,7 @@ export const getForm = (formId, callback, onError) => {
           callback(res.data);
         }
         else {
-          callback(null, "Server failed to create form");
+          callback(null, "Server failed to get form");
         }
       })
       .catch((error) => {

@@ -21,6 +21,7 @@ import ErrorComponent from "./components/ErrorComponent";
 import Main from "./Main";
 import NotFound from "./components/NotFound";
 import FormBuilder from "./components/FormBuilder";
+import PublishedForm from "./components/sub_components/PublishedForm";
 
 const AUTH = require("./controllers/auth");
 
@@ -35,7 +36,7 @@ function App() {
 
   if(componentError !== undefined) {
     return (
-      <ErrorComponent message={componentError.message}/>
+      <ErrorComponent message={componentError.isAxiosError ? componentError.response.data.message : componentError.message}/>
     );
   }
 
@@ -52,6 +53,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Main user={user} setError={setComponentError} />} />
               <Route path="/formBuilder/:formId" element={<FormBuilder user={user} setError={setComponentError} />} />
+              <Route path="/form/:formId" element={<PublishedForm setError={setComponentError} />} />
               <Route path="*" element={<NotFound />}/>
             </Routes>
           </Router>

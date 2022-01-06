@@ -23,6 +23,7 @@ class Form {
   elements: json[];
   submissions: json[];
   submissionHandlers: json;
+  submitMessage: string;
   protectedFields: string[] = [
     "id",
     "userId",
@@ -42,6 +43,7 @@ class Form {
     this.elements = [];
     this.submissions = [];
     this.submissionHandlers = [];
+    this.submitMessage = "";
   }
 
   static async createNew(userId: string, title: string): Promise<json> {
@@ -73,13 +75,26 @@ class Form {
         {type: "Email", isEnabled: false, receivers: ""},
         {type: "REST", isEnabled: false, endpoint: ""},
         {type: "Gsheet", isEnabled: false, gsheetId: ""}
-      ]
+      ],
+      submitMessage: ""
     };
     return await cf.insert(newForm.id, "forms", newForm);
   }
 
   async getByUserId(userId: string): Promise<json[]> {
     return await cf.getByFilter("forms", "userId", "==", userId);
+  }
+
+  async getPublishedForm(id: string): Promise<json> {
+    let formData: json[] = await cf.getByFilter("forms", "id", "==", id);
+    if(formData.length != 1) {
+      return {};
+    }
+    if(!formData[0].isPublished) {
+      throw new RestrictedResourceError("Form does not exist or is not published");
+    }
+    delete formData[0].userId;
+    return formData[0];
   }
 
   async getByFormId(id: string, userId: string): Promise<json> {
@@ -121,13 +136,13 @@ class Form {
       throw new FormNotFoundError();
     }
     let form = formData[0];
+    if(!form.isPublished) {
+      throw new Error("Cannot submit data to an unpublished form");
+    }
     // Check that formData matches form's elements
     /*
       formData should be in the format: {id: {name: <string>, value: <string>}}
     */
-    if(form.elements.length == 0) {
-      throw new InvalidFieldError("Cannot submit form because it does not contain any elements");
-    }
     let parsedFormData: json[] = [];
     for(var i: number = 0; i < form.elements.length; i++) {
       let elementId: string = form.elements[i].id;

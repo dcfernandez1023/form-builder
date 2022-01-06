@@ -12,6 +12,7 @@ router.post("/handleSubmit/:formId", formController.handleSubmit);
 // GET endpoints
 router.get("/getForms", formController.getForms);
 router.get("/getForm/:formId", formController.getForm);
+router.get("/getPublishedForm/:formId", formController.getPublishedForm);
 
 // DELETE endpoints
 router.delete("/delete/:formId", formController.delete);

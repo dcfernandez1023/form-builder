@@ -6,7 +6,8 @@ import {
   Form,
   Button,
   Figure,
-  Badge
+  Badge,
+  Spinner
 } from 'react-bootstrap';
 import { ElementUIFactory } from "./ElementUIFactory";
 
@@ -15,6 +16,7 @@ import { ElementUIFactory } from "./ElementUIFactory";
   Props:
     * form
     * mode - 'viewing' or 'building'
+    * isLoading
     * selectedElement
     * onSubmit
 */
@@ -23,10 +25,12 @@ const FormRenderer = (props) => {
   const[isEditingTitle, setIsEditingTitle] = useState(false);
   const[validated, setValidated] = useState(false);
   const[formData, setFormData] = useState({});
+  const[isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setForm(props.form);
-  }, [props.form, props.selectedElement]);
+    setIsLoading(props.isLoading === undefined ? false : props.isLoading);
+  }, [props.form, props.selectedElement, props.isLoading]);
 
   const onChangeFormTitle = (e) => {
     let formCopy = JSON.parse(JSON.stringify(form));
@@ -80,7 +84,7 @@ const FormRenderer = (props) => {
     if(!isValid) {
       return;
     }
-    props.onSubmit(dataCopy);
+    props.onSubmit(e, dataCopy);
   }
 
   if(form === null || form === undefined) {
@@ -159,7 +163,14 @@ const FormRenderer = (props) => {
             <hr />
             <Row>
               <Col style={{textAlign: "center"}}>
-                <Button type="submit" variant="success"> Submit </Button>
+                <Button type="submit" variant="success" disabled={props.isLoading}>
+                  {props.isLoading ?
+                    <Spinner as="span" size="sm" animation="border" style={{marginRight: "8px"}}/>
+                  :
+                    <span></span>
+                  }
+                  Submit
+                 </Button>
               </Col>
             </Row>
           </div>

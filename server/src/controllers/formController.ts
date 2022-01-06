@@ -46,6 +46,23 @@ module.exports.getForms = async (req: any, res: any, next: Function): Promise<an
 /**
   * Type: GET
   * Required URL parameters: formId
+  * JSON body: {}
+*/
+module.exports.getPublishedForm = async (req: any, res: any, next: Function): Promise<any> => {
+  try {
+    let formId: string = req.params.formId;
+    let form: Form = new Form();
+    let formData: json = await form.getPublishedForm(formId);
+    return res.status(OK).json(formData);
+  }
+  catch(error: any) {
+    next(error);
+  }
+}
+
+/**
+  * Type: GET
+  * Required URL parameters: formId
   * Required headers: {accessToken: <string>}
   * JSON body: {}
 */

@@ -29,6 +29,7 @@ app.get('*', (req,res) =>{
 
 // catch errors
 app.use((error: any, req: any, res: any, next: Function): any | void => {
+  console.error(error);
   if (error.statusCode) {
     return res.status(error.statusCode).json({
       message: error.message

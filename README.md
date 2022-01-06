@@ -190,6 +190,23 @@ Create and host forms without writing any code. Form submissions can be configur
         "submissionHandlers": <json>
       }
 
+#### `/api/form/getPublishedForm/:formId`
+
+<b> Note: </b> <i> This will return the form if it exists and is published. No access
+token is required to access a published form. </i>
+
+    Response Body: {
+        "id": <string>,
+        "title": <string>,
+        "dateCreated": <number>,
+        "lastModified": <number>,
+        "isPublished": <boolean>,
+        "accessKey": <string>,
+        "elements": [<json>],
+        "submissions": [<json>],
+        "submissionHandlers": <json>
+      }
+
 #### <u> POST </u>
 
 #### `/api/form/createNew`
