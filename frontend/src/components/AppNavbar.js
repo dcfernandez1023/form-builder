@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import {
   Container,
   Row,
@@ -8,11 +9,13 @@ import {
   Dropdown,
   Button
 } from 'react-bootstrap';
+import AccountSettings from "./sub_components/AccountSettings";
 
 
 /**
   Props:
     * user
+    * showSettings
     * logout
 */
 const AppNavbar = (props) => {
@@ -49,7 +52,7 @@ const AppNavbar = (props) => {
                           </Col>
                         </Row>
                       </ListGroup.Item>
-                      <ListGroup.Item action>
+                      <ListGroup.Item action onClick={() => {props.setShowSettings(true)}}>
                         Account Settings
                       </ListGroup.Item>
                       <ListGroup.Item action onClick={props.logout}>

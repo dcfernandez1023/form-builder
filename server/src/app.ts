@@ -22,7 +22,7 @@ app.use(express.json());
 app.use("/api", apiRouter.routes);
 
 // server static frontend files
- app.use(express.static(path.resolve("./") + "../../../frontend/build"));
+app.use(express.static(path.resolve("./") + "../../../frontend/build"));
 app.get('*', (req,res) =>{
   res.sendFile(path.resolve("../../frontend/build/index.html"));
 });

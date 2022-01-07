@@ -116,6 +116,16 @@ class User {
     return user;
   }
 
+  static async doesUserExist(email: string): Promise<boolean> {
+    // let cf: CloudFirestore = new CloudFirestore();
+    let currentUserData: json[] = await cf.getByFilter("users", "email", "==", email);
+    let credentialsData: json[] = await cf.getByFilter("credentials", "email", "==", email);
+    if(currentUserData.length > 0 || credentialsData.length > 0) {
+      return true;
+    }
+    return false;
+  }
+
   private validateFields(fields: json): json {
     let updateBody: json = {};
     for(var key in fields) {
@@ -134,22 +144,11 @@ class User {
   }
 
   private async getUserInfo(id: string): Promise<json> {
-    // let cf: CloudFirestore = new CloudFirestore();
     let userData: json[] = await cf.getByFilter("users", "id", "==", id);
     if(userData.length != 1) {
       return {};
     }
     return userData[0];
-  }
-
-  private static async doesUserExist(email: string): Promise<boolean> {
-    // let cf: CloudFirestore = new CloudFirestore();
-    let currentUserData: json[] = await cf.getByFilter("users", "email", "==", email);
-    let credentialsData: json[] = await cf.getByFilter("credentials", "email", "==", email);
-    if(currentUserData.length > 0 || credentialsData.length > 0) {
-      return true;
-    }
-    return false;
   }
 }
 

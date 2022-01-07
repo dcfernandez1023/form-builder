@@ -52,11 +52,11 @@ Initial release. Includes basic functionality of the application which allows us
 #### `/api/user/getUser`
 
     Required Request Headers: {
-      "accessToken": <string>
+      "access-token": <string>
     }
     --
     Response Header: {
-      "accessToken": <string>
+      "access-token": <string>
     }
 
     Response Body: {
@@ -75,11 +75,12 @@ Initial release. Includes basic functionality of the application which allows us
       "email": <string>
       "password": <string>,
       "firstName": <string>,
-      "lastName": <string>
+      "lastName": <string>,
+      "verificationToken": <string>
     }
     --
     Response Header: {
-      "accessToken": <string>
+      "access-token": <string>
     }
 
     Response Body: {
@@ -90,6 +91,15 @@ Initial release. Includes basic functionality of the application which allows us
       "dateCreated": <number>
     }
 
+#### `/api/user/registerVerify`
+
+<b> Note: </b> <i> This sends a registration token to the email address provided. To complete
+the registration process, pass the registration token from the email to the `/api/user/register` endpoint </i>
+
+    Request Body: {
+      "email": <string>
+    }
+
 #### `/api/user/login`
 
     Request Body: {
@@ -98,7 +108,7 @@ Initial release. Includes basic functionality of the application which allows us
     }
     --
     Response Header: {
-      "accessToken": <string>
+      "access-token": <string>
     }
 
 #### `/api/user/forgotPassword`
@@ -110,19 +120,23 @@ Initial release. Includes basic functionality of the application which allows us
 #### `/api/user/refreshAccessToken`
 
     Required Request Headers: {
-      "accessToken": <string>
+      "access-token": <string>
     }
     --
     Response Header: {
-      "accessToken": <string>
+      "access-token": <string>
     }
 
-#### `/api/user/resetPassowrd`
+#### `/api/user/resetPassword`
 
     Request Body: {
       "email": <string>,
       "newPassword": <string>,
       "verificationToken": <string>
+    }
+    --
+    Response Header: {
+      "access-token": <string>
     }
 
 #### `/api/user/updateFields`
@@ -130,7 +144,7 @@ Initial release. Includes basic functionality of the application which allows us
 <b> Note: </b> <i> Request body can contain some or all fields of the User object. The fields `id` and `dateCreated` are protected fields and cannot be updated, so they will not be updated if included. The response body will return only the fields that can be updated and if they included in the request body. </i>
 
     Required Request Headers: {
-      "accessToken": <string>
+      "access-token": <string>
     }
 
     Request Body: {
@@ -144,7 +158,7 @@ Initial release. Includes basic functionality of the application which allows us
     }
     --
     Response Header: {
-      "accessToken": <string>
+      "access-token": <string>
     }
 
     Response Body: {
@@ -156,7 +170,7 @@ Initial release. Includes basic functionality of the application which allows us
 #### `/api/user/delete`
 
     Required Request Headers: {
-      "accessToken": <string>
+      "access-token": <string>
     }
 
     Request Body: {
@@ -164,10 +178,10 @@ Initial release. Includes basic functionality of the application which allows us
     }
     --
     Response Header: {
-      "accessToken": <string>
+      "access-token": <string>
     }
 
-    Respone Body: {
+    Response Body: {
       "id": <string>
     }
 
@@ -178,11 +192,11 @@ Initial release. Includes basic functionality of the application which allows us
 #### `/api/form/getForms`
 
     Required Request Headers: {
-      "accessToken": <string>
+      "access-token": <string>
     }
     --
     Response Header: {
-      "accessToken": <string>
+      "access-token": <string>
     }
 
     Response Body: [
@@ -204,11 +218,11 @@ Initial release. Includes basic functionality of the application which allows us
 #### `/api/form/getForm/:formId`
 
     Required Request Headers: {
-      "accessToken": <string>
+      "access-token": <string>
     }
     --
     Response Header: {
-      "accessToken": <string>
+      "access-token": <string>
     }
 
     Response Body: {
@@ -246,7 +260,7 @@ token is required to access a published form. </i>
 #### `/api/form/createNew`
 
     Required Request Headers: {
-      "accessToken": <string>
+      "access-token": <string>
     }
 
     Request Body: {
@@ -254,7 +268,7 @@ token is required to access a published form. </i>
     }
     --
     Response Header: {
-      "accessToken": <string>
+      "access-token": <string>
     }    
 
     Response Body: {
@@ -275,7 +289,7 @@ token is required to access a published form. </i>
 <b> Note: </b> <i> Request body can contain some or all fields of the Form object. The fields `id`, `userId`, `dateCreated`, and `lastModified` are protected fields and cannot be updated, so they will not be updated if included. The response body will return only the fields that can be updated and were included in the request body. </i>
 
     Required Request Headers: {
-      "accessToken": <string>
+      "access-token": <string>
     }
 
     Request Body: {
@@ -292,7 +306,7 @@ token is required to access a published form. </i>
     }
     --    
     Response Header: {
-      "accessToken": <string>
+      "access-token": <string>
     }
 
     Response Body: {
@@ -320,9 +334,9 @@ token is required to access a published form. </i>
 #### `/api/form/delete/:formId`
 
     Request Headers: {
-      "accessToken": <string>
+      "access-token": <string>
     }
     --
     Response Header: {
-      "accessToken": <string>
+      "access-token": <string>
     }

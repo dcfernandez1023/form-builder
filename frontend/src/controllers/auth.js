@@ -11,6 +11,121 @@ const accessTokenHeader = constants.ACCESS_TOKEN_HEADER;
 
 
 /**
+  Verifies registration email
+*/
+export const verifyRegistrationEmail = (email, callback, onError) => {
+  try {
+    axios.post(baseEndpoint + "/registerVerify", {email: email})
+      .then((res) => {
+        callback();
+      })
+      .catch((error) => {
+        onError(error);
+      });
+  }
+  catch(error) {
+    onError(error);
+  }
+}
+
+/**
+  Completes registration
+*/
+export const register = (email, password, firstName, lastName, verificationToken, callback, onError) => {
+  try {
+    axios.post(baseEndpoint + "/register", {email: email, password: password, firstName: firstName, lastName: lastName, verificationToken: verificationToken})
+      .then((res) => {
+        console.log(res);
+        storeAccessToken(res.headers[accessTokenHeader]);
+        callback();
+      })
+      .catch((error) => {
+        onError(error);
+      });
+  }
+  catch(error) {
+    onError(error);
+  }
+}
+
+/**
+  Deletes a user
+*/
+export const deleteUser = (password, callback, onError) => {
+  try {
+    let token = getAccessToken();
+    if(token === null) {
+      onError(new Error("Token not found"));
+      return;
+    }
+    let headers = {[accessTokenHeader]: token};
+    axios.post(baseEndpoint + "/delete", {password: password}, {headers: headers})
+      .then((res) => {
+        storeAccessToken(res.headers[accessTokenHeader]);
+        callback(res.data.id);
+      })
+      .catch((error) => {
+        onError(error);
+      });
+  }
+  catch(error) {
+    onError(error);
+  }
+}
+
+/**
+  Updates a user
+*/
+export const updateUser = (user, callback, onError) => {
+  try {
+    let token = getAccessToken();
+    if(token === null) {
+      onError(new Error("Token not found"));
+      return;
+    }
+    let headers = {[accessTokenHeader]: token};
+    axios.post(baseEndpoint + "/updateFields", {fields: user}, {headers: headers})
+      .then((res) => {
+        storeAccessToken(res.headers[accessTokenHeader]);
+        for(var key in res.data) {
+          user[key] = res.data[key];
+        }
+        callback(user);
+      })
+      .catch((error) => {
+        onError(error);
+      });
+  }
+  catch(error) {
+    onError(error);
+  }
+}
+
+/**
+  Resets a user's password
+*/
+export const resetPassword = (email, newPassword, callback, onError) => {
+  try {
+    let token = getAccessToken();
+    if(token === null) {
+      onError(new Error("Token not found"));
+      return;
+    }
+    axios.post(baseEndpoint + "/resetPassword", {email: email, newPassword: newPassword, verificationToken: token})
+      .then((res) => {
+        storeAccessToken(res.headers[accessTokenHeader]);
+        callback(res);
+      })
+      .catch((error) => {
+        onError(error);
+      });
+  }
+  catch(error) {
+    onError(error);
+  }
+}
+
+/**
   Logs the user out
 */
 export const logout = () => {
@@ -70,7 +185,6 @@ export const getUser = (callback, onError) => {
   try {
     let token = getAccessToken();
     if(token === null) {
-      console.log("Access token null");
       callback(null);
       return;
     }

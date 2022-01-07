@@ -6,6 +6,7 @@ const userController = require("../../controllers/userController");
 
 // POST endpoints
 router.post("/register", userController.register);
+router.post("/registerVerify", userController.registerVerify);
 router.post("/login", userController.login);
 router.post("/forgotPassword", userController.sendForgotPasswordEmail);
 router.post("/refreshAccessToken", userController.refreshAccessToken);

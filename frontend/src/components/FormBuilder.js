@@ -280,15 +280,15 @@ const FormBuilder = (props) => {
           {/* Form editor */}
           <Row style={{minHeight: "50vh"}}>
             {/* Element selector */}
-            <Col xs={3} style={{borderRight: "1px solid lightGray"}}>
+            <Col sm={3} style={{borderRight: "1px solid lightGray", marginBottom: "10px"}}>
               <ElementSelector form={form} selectedElement={selectedElement} onSelectElement={setSelectedElement} onChangeForm={onChangeForm} setSelectedIndex={setSelectedIndex} />
             </Col>
             {/* Form renderer */}
-            <Col xs={6}>
+            <Col sm={6} style={{marginBottom: "10px"}}>
               <FormRenderer form={form} onChangeForm={onChangeForm} selectedElement={selectedElement} mode="building" onSubmit={() => {return;}} editingTitle={editingTitle} setEditingTitle={setEditingTitle}/>
             </Col>
             {/* Element editor */}
-            <Col xs={3} style={{borderLeft: "1px solid lightGray"}}>
+            <Col sm={3} style={{borderLeft: "1px solid lightGray", marginBottom: "10px"}}>
               <ElementEditor form={form} onChangeForm={onChangeForm} selectedElement={selectedElement} onChangeSelectedElement={setSelectedElement} selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} />
             </Col>
           </Row>

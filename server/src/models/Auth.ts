@@ -6,6 +6,7 @@ import { TokenInvalidError } from "../errors/TokenInvalidError";
 import { cf } from "./data_access/CloudFirestore";
 import { json } from "./Json";
 import { EmailSender } from "./EmailSender";
+import { User } from "./User";
 const bcrypt = require ('bcrypt');
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -17,6 +18,18 @@ class Auth {
     const userCredentials = {id: userId, email: email, password: hashedPassword};
     cf.insert(userId, "credentials", userCredentials);
     return Auth.generateAccessToken(userCredentials.id);
+  }
+
+  static async registerVerify(email: string) {
+    if(await User.doesUserExist(email)) {
+      throw new UserAlreadyExistsError();
+    }
+    let accessToken: string = Auth.generateAccessToken(email);
+    await EmailSender.sendEmail(
+      [email],
+      "Verification Code",
+      "Verification code: " + accessToken
+    );
   }
 
   static async login(email: string, password: string): Promise<string> {
@@ -61,8 +74,7 @@ class Auth {
     return Auth.generateAccessToken(userId);
   }
 
-  static async resetPassword(email: string, newPassword: string, token: string) {
-    // let cf: CloudFirestore = new CloudFirestore();
+  static async resetPassword(email: string, newPassword: string, token: string): Promise<string> {
     let userCredentials: json[] = await cf.getByFilter("credentials", "email", "==", email);
     if(userCredentials.length != 1) {
       throw new UserDoesNotExistError();
@@ -73,6 +85,7 @@ class Auth {
     const hashedPassword: string = await bcrypt.hash(newPassword, 10);
     const updateData = {password: hashedPassword};
     cf.update(userCredentials[0].id, "credentials", updateData);
+    return Auth.refreshAccessToken(userCredentials[0].id, token);
   }
 
   static decodeAccessToken(accessToken: string): string {
@@ -96,24 +109,22 @@ class Auth {
     }
   }
 
-  // static validateAccessToken(userId: string, accessToken: string): boolean {
-  //   try {
-  //     var ca: string = accessToken;
-  //     var base64Url: string = ca.split('.')[1];
-  //     let payload: json = JSON.parse(Buffer.from(base64Url, 'base64').toString());
-  //     return (
-  //       jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET) &&
-  //       payload.id === userId
-  //     );
-  //     // return true;
-  //   }
-  //   catch(error: any) {
-  //     return false;
-  //   }
-  // }
-
   static generateAccessToken(userId: string): string {
     return jwt.sign({id: userId}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "30m"});
+  }
+
+  static async validateRegistrationToken(verificationToken: string, email: string, next: Function) {
+    try {
+      if(!Auth.validateAccessToken(verificationToken) || Auth.decodeAccessToken(verificationToken) !== email) {
+        throw new TokenInvalidError();
+      }
+      if(await User.doesUserExist(email)) {
+        throw new UserAlreadyExistsError();
+      }
+    }
+    catch(error: any) {
+      next(error);
+    }
   }
 }
 

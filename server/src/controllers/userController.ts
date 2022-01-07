@@ -6,12 +6,28 @@ const { ACCESS_TOKEN, SUCCESS_MESSAGE } = require("./constants");
 
 
 /**
+  Type: POST
+  JSON body: {email: <string>}
+*/
+module.exports.registerVerify = async (req: any, res: any, next: Function): Promise<any> => {
+  try {
+    let body = req.body;
+    await Auth.registerVerify(body.email);
+    return res.status(OK).json({});
+  }
+  catch(error: any) {
+    next(error);
+  }
+}
+
+/**
   * Type: POST
-  * JSON body: {email: <string>, password: <string>, firstName: <string>, lastName: <string>}
+  * JSON body: {email: <string>, password: <string>, firstName: <string>, lastName: <string>, verificationToken: <string>}
 */
 module.exports.register = async (req: any, res: any, next: Function): Promise<any> => {
   try {
     let body = req.body;
+    Auth.validateRegistrationToken(body.verificationToken, body.email, next);
     let newUser: json = await User.createNew(body.email, body.password, body.firstName, body.lastName);
     res.set(ACCESS_TOKEN, Auth.generateAccessToken(newUser.id));
     return res.status(OK).json(newUser);
@@ -76,7 +92,8 @@ module.exports.refreshAccessToken = async (req: any, res: any, next: Function): 
 module.exports.resetPassword = async (req: any, res: any, next: Function): Promise<any> => {
   try {
     let body = req.body;
-    await Auth.resetPassword(body.email, body.newPassword, body.verificationToken);
+    let accessToken: string = await Auth.resetPassword(body.email, body.newPassword, body.verificationToken);
+    res.set(ACCESS_TOKEN, accessToken);
     return res.status(OK).json(SUCCESS_MESSAGE);
   }
   catch(error: any) {

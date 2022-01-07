@@ -22,6 +22,7 @@ import Main from "./Main";
 import NotFound from "./components/NotFound";
 import FormBuilder from "./components/FormBuilder";
 import PublishedForm from "./components/sub_components/PublishedForm";
+import AccountSettings from "./components/sub_components/AccountSettings";
 
 const AUTH = require("./controllers/auth");
 
@@ -29,6 +30,8 @@ const AUTH = require("./controllers/auth");
 function App() {
   const[user, setUser] = useState();
   const[componentError, setComponentError] = useState();
+  const[showSettings, setShowSettings] = useState(false);
+  const[isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     AUTH.getUser(setUser, () => {setUser(null)});
@@ -40,12 +43,49 @@ function App() {
     );
   }
 
+  const updateUser = (updatedUser, childCallback, childOnError) => {
+    setIsSaving(true);
+    const callback = (data) => {
+      if(data.email === undefined) {
+        data.email = user.email;
+      }
+      setUser(data);
+      childCallback();
+    }
+    AUTH.updateUser(updatedUser, callback, childOnError);
+  }
+
+  const updatePassword = (email, newPassword, childCallback, childOnError) => {
+    setIsSaving(true);
+    AUTH.resetPassword(email, newPassword, childCallback, childOnError);
+  }
+
+  const afterAccountSettingsSubmit = () => {
+    setIsSaving(false);
+  }
+
+  const deleteUser = (password, childOnError) => {
+    setIsSaving(true);
+    AUTH.deleteUser(password, AUTH.logout, childOnError);
+  }
+
   const pipe = <span style={{marginLeft: "5px", marginRight: "5px"}}> | </span>;
 
   return (
     <div>
       <div>
-        <AppNavbar user={user} logout={AUTH.logout} />
+        <AccountSettings
+          user={user}
+          show={showSettings}
+          isLoading={isSaving}
+          updateUser={updateUser}
+          updatePassword={updatePassword}
+          deleteUser={deleteUser}
+          afterSubmit={afterAccountSettingsSubmit}
+          onClose={() => {setShowSettings(false)}}
+          setError={setComponentError}
+        />
+        <AppNavbar user={user} logout={AUTH.logout} setShowSettings={setShowSettings}/>
         {user === undefined ?
           <div style={{marginTop: "30px", textAlign: "center"}}>
             <Spinner animation="grow" />
@@ -67,24 +107,24 @@ function App() {
       </div>
       <footer id="footer">
         <Container>
-          <div style={{marginTop: "8px"}}>
-            <span style={{float: "left"}}>
+          <Row style={{marginTop: "8px", marginBottom: "8px"}}>
+            <Col sm={4}>
               Made with ❤️ by <a style={{textDecoration: "none"}} href="https://github.com/dcfernandez1023" target="_blank">dcfernandez1023</a>
-            </span>
-            <span style={{float: "right"}}>
+            </Col>
+            <Col sm={8} style={{textAlign: "right"}}>
               <span>
                 <a style={{textDecoration: "none"}} href="https://github.com/dcfernandez1023/form-builder#changelog" target="_blank">Changelog 📝</a>
               </span>
               {pipe}
               <span>
-                <a style={{textDecoration: "none"}} href="https://github.com/dcfernandez1023/form-builder" target="_blank">View Code 💻</a>
+                <a style={{textDecoration: "none"}} href="https://github.com/dcfernandez1023/form-builder" target="_blank">Code <img style={{marginBottom: "2px", height: "20px", width: "20px"}} src="/github.png" /></a>
               </span>
               {pipe}
               <span>
                 <a style={{textDecoration: "none"}} href="#" target="_blank">Submit Feedback ✏️</a>
               </span>
-            </span>
-          </div>
+            </Col>
+          </Row>
         </Container>
       </footer>
     </div>

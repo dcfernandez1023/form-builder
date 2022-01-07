@@ -11,6 +11,7 @@ import {
   Button,
   Spinner
 } from 'react-bootstrap';
+import VerifyEmail from "./VerifyEmail";
 const AUTH = require("../controllers/auth");
 
 
@@ -24,6 +25,41 @@ const Login = (props) => {
   const[registerLastName, setRegisterLastName] = useState("");
 
   const[isLoading, setIsLoading] = useState(false);
+  const[isVerifying, setIsVerifying] = useState(false);
+
+  const onRegister = () => {
+    if(registerEmail.trim().length == 0) {
+      alert("Please enter your registration email");
+      return;
+    }
+    if(registerPassword.trim().length == 0) {
+      alert("Please enter your registration password");
+      return;
+    }
+    if(registerFirstName.trim().length == 0) {
+      alert("Please enter your first name");
+      return;
+    }
+    if(registerLastName.trim().length == 0) {
+      alert("Please enter your last name");
+      return;
+    }
+    setIsLoading(true);
+    const callback = () => {
+      setIsVerifying(true);
+      setIsLoading(false);
+    }
+    const onError = (error) => {
+      setIsLoading(false);
+      if(error.isAxiosError) {
+        alert(error.response.data.message);
+      }
+      else {
+        alert(error.message);
+      }
+    }
+    AUTH.verifyRegistrationEmail(registerEmail, callback, onError);
+  }
 
   const onLogin = () => {
     if(loginEmail.trim().length == 0) {
@@ -53,6 +89,13 @@ const Login = (props) => {
     );
   }
 
+  if(isVerifying) {
+    return (
+      <VerifyEmail
+        registrationData={{email: registerEmail, password: registerPassword, firstName: registerFirstName, lastName: registerLastName}}
+      />
+    );
+  }
   return (
     <Container>
       <div style={{height: "100px"}}></div>
@@ -155,7 +198,7 @@ const Login = (props) => {
               <br/>
               <Row>
                 <Col style={{textAlign: "center"}}>
-                  <Button variant="info" disabled={isLoading}>
+                  <Button variant="info" disabled={isLoading} onClick={onRegister}>
                     {isLoading ?
                       <Spinner as="span" size="sm" animation="border" style={{marginRight: "8px"}}/>
                     :

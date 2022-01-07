@@ -269,7 +269,7 @@ const ElementEditor = (props) => {
                       <Form.Control
                         name="value"
                         size="sm"
-                        value={props.selectedElement !== undefined ? props.selectedElement.options[optionIndex].value : ""}
+                        value={option.value}
                         onChange={(e) => {
                           onChangeOption(optionIndex, e);
                         }}
@@ -280,7 +280,7 @@ const ElementEditor = (props) => {
                       <Form.Control
                         name="display"
                         size="sm"
-                        value={props.selectedElement.options[optionIndex].display}
+                        value={option.display}
                         onChange={(e) => {
                           onChangeOption(optionIndex, e);
                         }}
