@@ -3,11 +3,45 @@ Create and host forms without writing any code. Form submissions can be configur
 - Email
 - Google Sheets
 - REST API
+<hr>
+
+## Changelog
+
+### 1/6/2022
+<b> Tags: </b> `Release`
+
+Initial release. Includes basic functionality of the application which allows users to:
+- Build forms
+- Publish & host forms
+- Secure forms with access tokens
+- Configure submission handlers to send data to an email address, REST API, or Google Sheet
+<hr>
 
 ## Usage
-- To install packages for both the frontend and backend, navigate to /server and run `npm run install-all`
+- To only install packages for both the frontend and backend, navigate to /server and run `npm run install-all`
 - To build both the frontend and backend, navigate to /server and run `npm run build-all`
 - To build and run both the frontend and backend simultaneously, navigate to /server and run `npm run build-and-run-all`
+<hr>
+
+## Noteworthy Packages/Dependencies
+### Frontend:
+- React (https://reactjs.org/)
+- Create React App (https://reactjs.org/docs/create-a-new-react-app.html)
+- React Bootstrap (https://react-bootstrap.github.io/)
+- recharts (https://recharts.org/en-US/)
+- axios (https://www.npmjs.com/package/axios)
+- react-router-dom (https://www.npmjs.com/package/react-router-dom)
+
+### Backend:
+- TypeScript (https://www.typescriptlang.org/)
+- ts-node (https://www.npmjs.com/package/ts-node)
+- Express (https://expressjs.com/)
+- firebase-admin (https://www.npmjs.com/package/firebase-admin)
+- nodemailer (https://nodemailer.com/about/)
+- google-spreadsheet (https://www.npmjs.com/package/google-spreadsheet)
+- uuid (https://www.npmjs.com/package/uuid)
+- jsonwebtoken https://www.npmjs.com/package/jsonwebtoken)
+<hr>
 
 ## API
 

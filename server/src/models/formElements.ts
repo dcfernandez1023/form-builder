@@ -20,7 +20,7 @@ export const elements: json = {
     label: "",
     required: false,
     placeholder: "",
-    columns: 12
+    columns: 6
   },
   RADIO: {
     id: "",
@@ -32,7 +32,7 @@ export const elements: json = {
     value1: "",
     value2: "",
     required: false,
-    columns: 12
+    columns: 6
   },
   SELECT: {
     id: "",
@@ -41,7 +41,7 @@ export const elements: json = {
     label: "",
     required: false,
     options: [],
-    columns: 12
+    columns: 6
   },
   TEXTAREA: {
     id: "",
@@ -51,6 +51,6 @@ export const elements: json = {
     required: false,
     placeholder: "",
     rows: 4,
-    columns: 12
+    columns: 6
   }
 };

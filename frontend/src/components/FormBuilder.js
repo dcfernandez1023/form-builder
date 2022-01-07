@@ -39,6 +39,7 @@ const FormBuilder = (props) => {
   const[form, setForm] = useState();
   const[showNotification, setShowNotification] = useState(false);
   const[notification, setNotification] = useState("");
+  const[editingTitle, setEditingTitle] = useState(false);
   const[selectedElement, setSelectedElement] = useState();
   const[selectedIndex, setSelectedIndex] = useState(-1);
   const[isSaved, setIsSaved] = useState(true);
@@ -88,6 +89,10 @@ const FormBuilder = (props) => {
 
   const handlePublish = () => {
     let formCopy = JSON.parse(JSON.stringify(form));
+    if(formCopy.title.trim().length == 0) {
+      alert("Title cannot be blank");
+      return;
+    }
     formCopy.isPublished = !formCopy.isPublished;
     setIsSaving(true);
     const callback = (data, message) => {
@@ -116,6 +121,14 @@ const FormBuilder = (props) => {
 
   const saveForm = (e, componentCallback, updatedForm) => {
     let formCopy = JSON.parse(JSON.stringify(form));
+    if(formCopy.title.trim().length == 0) {
+      alert("Title cannot be blank");
+      return;
+    }
+    if(updatedForm !== undefined && updatedForm.title.trim().length == 0) {
+      alert("Title cannot be blank");
+      return;
+    }
     setIsSaving(true);
     const callback = (data, message) => {
       if(data === null) {
@@ -272,7 +285,7 @@ const FormBuilder = (props) => {
             </Col>
             {/* Form renderer */}
             <Col xs={6}>
-              <FormRenderer form={form} onChangeForm={onChangeForm} selectedElement={selectedElement} mode="building" onSubmit={() => {return;}}/>
+              <FormRenderer form={form} onChangeForm={onChangeForm} selectedElement={selectedElement} mode="building" onSubmit={() => {return;}} editingTitle={editingTitle} setEditingTitle={setEditingTitle}/>
             </Col>
             {/* Element editor */}
             <Col xs={3} style={{borderLeft: "1px solid lightGray"}}>

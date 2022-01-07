@@ -40,27 +40,53 @@ function App() {
     );
   }
 
+  const pipe = <span style={{marginLeft: "5px", marginRight: "5px"}}> | </span>;
+
   return (
     <div>
-      <AppNavbar user={user} logout={AUTH.logout} />
-      {user === undefined ?
-        <div style={{marginTop: "30px", textAlign: "center"}}>
-          <Spinner animation="grow" />
-        </div>
-      :
-        <div>
-          <Router>
-            <Routes>
-              <Route path="/" element={<Main user={user} setError={setComponentError} />} />
-              <Route path="/formBuilder/:formId" element={<FormBuilder user={user} setError={setComponentError} />} />
-              <Route path="/form/:formId" element={<PublishedForm setError={setComponentError} />} />
-              <Route path="*" element={<NotFound />}/>
-            </Routes>
-          </Router>
-        </div>
-      }
-      <br/>
-      <br/>
+      <div>
+        <AppNavbar user={user} logout={AUTH.logout} />
+        {user === undefined ?
+          <div style={{marginTop: "30px", textAlign: "center"}}>
+            <Spinner animation="grow" />
+          </div>
+        :
+          <div>
+            <Router>
+              <Routes>
+                <Route path="/" element={<Main user={user} setError={setComponentError} />} />
+                <Route path="/formBuilder/:formId" element={<FormBuilder user={user} setError={setComponentError} />} />
+                <Route path="/form/:formId" element={<PublishedForm setError={setComponentError} />} />
+                <Route path="*" element={<NotFound />}/>
+              </Routes>
+            </Router>
+          </div>
+        }
+        <br/>
+        <br/>
+      </div>
+      <footer id="footer">
+        <Container>
+          <div style={{marginTop: "8px"}}>
+            <span style={{float: "left"}}>
+              Made with ❤️ by <a style={{textDecoration: "none"}} href="https://github.com/dcfernandez1023" target="_blank">dcfernandez1023</a>
+            </span>
+            <span style={{float: "right"}}>
+              <span>
+                <a style={{textDecoration: "none"}} href="https://github.com/dcfernandez1023/form-builder#changelog" target="_blank">Changelog 📝</a>
+              </span>
+              {pipe}
+              <span>
+                <a style={{textDecoration: "none"}} href="https://github.com/dcfernandez1023/form-builder" target="_blank">View Code 💻</a>
+              </span>
+              {pipe}
+              <span>
+                <a style={{textDecoration: "none"}} href="#" target="_blank">Submit Feedback ✏️</a>
+              </span>
+            </span>
+          </div>
+        </Container>
+      </footer>
     </div>
   );
 }

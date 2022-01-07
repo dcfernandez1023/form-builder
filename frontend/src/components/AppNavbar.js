@@ -5,7 +5,8 @@ import {
   ListGroup,
   Navbar,
   Nav,
-  Dropdown
+  Dropdown,
+  Button
 } from 'react-bootstrap';
 
 
@@ -48,12 +49,6 @@ const AppNavbar = (props) => {
                           </Col>
                         </Row>
                       </ListGroup.Item>
-                      <ListGroup.Item action onClick = {() => {window.location.pathname = "/changelog"}}>
-                        View Changelog
-                      </ListGroup.Item>
-                      <ListGroup.Item action>
-                        Submit Feedback
-                      </ListGroup.Item>
                       <ListGroup.Item action>
                         Account Settings
                       </ListGroup.Item>
@@ -67,7 +62,9 @@ const AppNavbar = (props) => {
             </Dropdown>
           </Nav>
           :
-          <div></div>
+          <Nav>
+
+          </Nav>
         }
       </Container>
     </Navbar>

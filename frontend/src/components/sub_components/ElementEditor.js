@@ -109,7 +109,7 @@ const ElementEditor = (props) => {
             <Form.Label> {field.display} </Form.Label>
             <Form.Control
               name={field.value}
-              value={selectedElement[field.value]}
+              value={props.selectedElement !== undefined ? props.selectedElement[field.value] : ""}
               size="sm"
               onChange={(e) => {onEditAttribute(field.value, e.target.value)}}
             />
@@ -122,7 +122,7 @@ const ElementEditor = (props) => {
             <Form.Label> {field.display} </Form.Label>
             <Form.Select
                name={field.value}
-               value={selectedElement[field.value]}
+               value={props.selectedElement !== undefined ? props.selectedElement[field.value] : ""}
                size="sm"
                onChange={(e) => {onEditAttribute(field.value, e.target.value)}}
             >
@@ -146,7 +146,7 @@ const ElementEditor = (props) => {
             <Form.Label> {field.display} </Form.Label>
             <Form.Control
               name={field.value}
-              value={selectedElement[field.value]}
+              value={props.selectedElement !== undefined ? props.selectedElement[field.value] : ""}
               size="sm"
               onChange={(e) => {onEditAttribute(field.value, e.target.value)}}
             />
@@ -159,7 +159,7 @@ const ElementEditor = (props) => {
             <Form.Label> {field.display} </Form.Label>
             <Form.Select
                name={field.value}
-               value={selectedElement[field.value]}
+               value={props.selectedElement !== undefined ? props.selectedElement[field.value] : ""}
                size="sm"
                onChange={(e) => {onEditAttribute(field.value, e.target.value)}}
             >
@@ -183,7 +183,7 @@ const ElementEditor = (props) => {
             <Form.Label> {field.display} </Form.Label>
             <Form.Control
               name={field.value}
-              value={selectedElement[field.value]}
+              value={props.selectedElement !== undefined ? props.selectedElement[field.value] : ""}
               size="sm"
               onChange={(e) => {onEditAttribute(field.value, e.target.value)}}
             />
@@ -196,7 +196,7 @@ const ElementEditor = (props) => {
             <Form.Label> {field.display} </Form.Label>
             <Form.Select
                name={field.value}
-               value={selectedElement[field.value]}
+               value={props.selectedElement !== undefined ? props.selectedElement[field.value] : ""}
                size="sm"
                onChange={(e) => {onEditAttribute(field.value, e.target.value)}}
             >
@@ -220,7 +220,7 @@ const ElementEditor = (props) => {
             <Form.Label> {field.display} </Form.Label>
             <Form.Control
               name={field.value}
-              value={selectedElement[field.value]}
+              value={props.selectedElement !== undefined ? props.selectedElement[field.value] : ""}
               size="sm"
               onChange={(e) => {onEditAttribute(field.value, e.target.value)}}
             />
@@ -233,7 +233,7 @@ const ElementEditor = (props) => {
             <Form.Label> {field.display} </Form.Label>
             <Form.Select
                name={field.value}
-               value={selectedElement[field.value]}
+               value={props.selectedElement !== undefined ? props.selectedElement[field.value] : ""}
                size="sm"
                onChange={(e) => {onEditAttribute(field.value, e.target.value)}}
             >
@@ -269,7 +269,7 @@ const ElementEditor = (props) => {
                       <Form.Control
                         name="value"
                         size="sm"
-                        value={selectedElement.options[optionIndex].value}
+                        value={props.selectedElement !== undefined ? props.selectedElement.options[optionIndex].value : ""}
                         onChange={(e) => {
                           onChangeOption(optionIndex, e);
                         }}
@@ -280,7 +280,7 @@ const ElementEditor = (props) => {
                       <Form.Control
                         name="display"
                         size="sm"
-                        value={selectedElement.options[optionIndex].display}
+                        value={props.selectedElement.options[optionIndex].display}
                         onChange={(e) => {
                           onChangeOption(optionIndex, e);
                         }}

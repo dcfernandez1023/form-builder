@@ -17,6 +17,8 @@ import { ElementUIFactory } from "./ElementUIFactory";
     * form
     * mode - 'viewing' or 'building'
     * isLoading
+    * editingTitle
+    * setEditingTitle
     * selectedElement
     * onSubmit
 */
@@ -30,7 +32,8 @@ const FormRenderer = (props) => {
   useEffect(() => {
     setForm(props.form);
     setIsLoading(props.isLoading === undefined ? false : props.isLoading);
-  }, [props.form, props.selectedElement, props.isLoading]);
+    setIsEditingTitle(props.editingTitle === undefined ? false : props.editingTitle);
+  }, [props.form, props.selectedElement, props.isLoading, props.editingTitle]);
 
   const onChangeFormTitle = (e) => {
     let formCopy = JSON.parse(JSON.stringify(form));
@@ -39,15 +42,15 @@ const FormRenderer = (props) => {
   }
 
   const makeTitleHeader = () => {
-    // if(form.title.trim().length == 0) {
-    //   alert("Title cannot be blank.");
-    //   return;
-    // }
-    setIsEditingTitle(false);
+    if(form.title.trim().length == 0) {
+      alert("Title cannot be blank.");
+      return;
+    }
+    props.setEditingTitle(false);
   }
 
   const makeTitleEditable = () => {
-    setIsEditingTitle(true);
+    props.setEditingTitle(true);
   }
 
   const onChangeFormElement = (id, name, value) => {
@@ -101,7 +104,7 @@ const FormRenderer = (props) => {
             <div style={{width: "300px", margin: "0 auto"}}>
               <Form.Control
                 name="title"
-                value={form.title}
+                value={props.form.title}
                 onChange={onChangeFormTitle}
               />
               <div style={{textAlign: "right", marginTop: "8px"}}>
