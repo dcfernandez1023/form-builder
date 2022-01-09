@@ -12,6 +12,7 @@ import {
   Spinner
 } from 'react-bootstrap';
 import VerifyEmail from "./VerifyEmail";
+import ResetPassword from "./ResetPassword";
 const AUTH = require("../controllers/auth");
 
 
@@ -26,6 +27,7 @@ const Login = (props) => {
 
   const[isLoading, setIsLoading] = useState(false);
   const[isVerifying, setIsVerifying] = useState(false);
+  const[resetPassword, setResetPassword] = useState(false);
 
   const onRegister = () => {
     if(registerEmail.trim().length == 0) {
@@ -96,6 +98,11 @@ const Login = (props) => {
       />
     );
   }
+  if(resetPassword) {
+    return (
+      <ResetPassword />
+    );
+  }
   return (
     <Container>
       <div style={{height: "100px"}}></div>
@@ -109,7 +116,7 @@ const Login = (props) => {
             <Tab eventKey="login" title="Login">
               <br/>
               <Row>
-                <Col md={6}>
+                <Col md={6} style={{marginBottom: "12px"}}>
                   <FloatingLabel controlId="login-email" label="Email">
                     <Form.Control
                       type="text"
@@ -119,7 +126,7 @@ const Login = (props) => {
                     />
                   </FloatingLabel>
                 </Col>
-                <Col md={6}>
+                <Col md={6} style={{marginBottom: "12px"}}>
                   <FloatingLabel controlId="login-password" label="Password">
                     <Form.Control
                       type="password"
@@ -130,8 +137,7 @@ const Login = (props) => {
                   </FloatingLabel>
                 </Col>
               </Row>
-              <br/>
-              <Row>
+              <Row style={{marginTop: "8px"}}>
                 <Col style={{textAlign: "center"}}>
                   <Button variant="info" disabled={isLoading} onClick={onLogin}>
                     {isLoading ?
@@ -143,14 +149,20 @@ const Login = (props) => {
                   </Button>
                 </Col>
               </Row>
-              <br/>
+              <Row>
+                <Col style={{textAlign: "center"}}>
+                  <Button variant="link" onClick={() => setResetPassword(true)}>
+                    Forgot Password?
+                  </Button>
+                </Col>
+              </Row>
             </Tab>
             {/* Register tab */}
             <Tab eventKey="register" title="Register">
               <br/>
               {/* Register email and password Row */}
               <Row>
-                <Col md={6}>
+                <Col md={6} style={{marginBottom: "12px"}}>
                   <FloatingLabel controlId="register-email" label="Email">
                     <Form.Control
                       type="text"
@@ -160,7 +172,7 @@ const Login = (props) => {
                     />
                   </FloatingLabel>
                 </Col>
-                <Col md={6}>
+                <Col md={6} style={{marginBottom: "12px"}}>
                   <FloatingLabel controlId="register-password" label="Password">
                     <Form.Control
                       type="password"
@@ -170,11 +182,8 @@ const Login = (props) => {
                     />
                   </FloatingLabel>
                 </Col>
-              </Row>
-              <br/>
-              {/* Register first name and last name Row */}
-              <Row>
-                <Col md={6}>
+                {/* Register first name and last name Row */}
+                <Col md={6} style={{marginBottom: "12px"}}>
                   <FloatingLabel controlId="register-first" label="First Name">
                     <Form.Control
                       type="text"
@@ -184,7 +193,7 @@ const Login = (props) => {
                     />
                   </FloatingLabel>
                 </Col>
-                <Col md={6}>
+                <Col md={6} style={{marginBottom: "12px"}}>
                   <FloatingLabel controlId="register-last" label="Last Name">
                     <Form.Control
                       type="text"
@@ -195,8 +204,7 @@ const Login = (props) => {
                   </FloatingLabel>
                 </Col>
               </Row>
-              <br/>
-              <Row>
+              <Row style={{marginTop: "8px"}}>
                 <Col style={{textAlign: "center"}}>
                   <Button variant="info" disabled={isLoading} onClick={onRegister}>
                     {isLoading ?

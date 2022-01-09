@@ -1,8 +1,13 @@
 import { Form } from "../models/Form";
 import { Auth } from "../models/Auth";
 import { json } from "../models/Json";
+import { FormDataValidator } from "./data_validators/FormDataValidator";
+import { DataValidator } from "./data_validators/DataValidator";
 const { OK, INTERNAL_SERVER_ERROR } = require('http-status-codes');
 const { ACCESS_TOKEN, SUCCESS_MESSAGE } = require("./constants");
+
+
+const FORM_DATA_VALIDATOR = new FormDataValidator();
 
 
 /**
@@ -15,6 +20,7 @@ module.exports.createNew = async (req: any, res: any, next: Function): Promise<a
     let userId: string = Auth.decodeAccessToken(req.header(ACCESS_TOKEN));
     let accessToken: string = await Auth.refreshAccessToken(userId, req.header(ACCESS_TOKEN));
     let body = req.body;
+    FORM_DATA_VALIDATOR.trimFields(body);
     let newForm = await Form.createNew(userId, body.title);
     res.set(ACCESS_TOKEN, accessToken);
     return res.status(OK).json(newForm);
@@ -93,6 +99,7 @@ module.exports.updateFields = async (req: any, res: any, next: Function): Promis
     let accessToken: string = await Auth.refreshAccessToken(userId, req.header(ACCESS_TOKEN));
     let formId: string = req.params.formId;
     let body = req.body;
+    FORM_DATA_VALIDATOR.trimFields(body.fields);
     let form: Form = new Form();
     let updateRes = await form.updateFields(userId, formId, body.fields);
     res.set(ACCESS_TOKEN, accessToken);
@@ -133,8 +140,9 @@ module.exports.delete = async (req: any, res: any, next: Function): Promise<any>
 module.exports.handleSubmit = async (req: any, res: any, next: Function): Promise<any> => {
   try {
     let formId: string = req.params.formId;
-    let body = req.body;
     let form: Form = new Form();
+    let body = req.body;
+    FORM_DATA_VALIDATOR.trimFields(body);
     let submissionRes: json = await form.handleSubmit(formId, body.formSubmission);
     return res.status(OK).json(submissionRes);
   }

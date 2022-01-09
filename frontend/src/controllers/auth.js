@@ -9,6 +9,23 @@ const constants = require("./constants");
 const baseEndpoint = constants.SERVER_API_URL + "/api/user";
 const accessTokenHeader = constants.ACCESS_TOKEN_HEADER;
 
+/**
+  Sends forgot password email
+*/
+export const sendForgotPasswordEmail = (email, callback, onError) => {
+  try {
+    axios.post(baseEndpoint + "/forgotPassword", {email: email})
+      .then((res) => {
+        callback();
+      })
+      .catch((error) => {
+        onError(error);
+      });
+  }
+  catch(error) {
+    onError(error);
+  }
+}
 
 /**
   Verifies registration email
@@ -104,9 +121,9 @@ export const updateUser = (user, callback, onError) => {
 /**
   Resets a user's password
 */
-export const resetPassword = (email, newPassword, callback, onError) => {
+export const resetPassword = (email, newPassword, callback, onError, verificationToken) => {
   try {
-    let token = getAccessToken();
+    let token = verificationToken === undefined ? getAccessToken() : verificationToken;
     if(token === null) {
       onError(new Error("Token not found"));
       return;
@@ -215,13 +232,8 @@ export const getUser = (callback, onError) => {
   will send 'true' to the callback() callback function and set the access
   token in local storage
 */
-export const isLoggedIn = (callback, onError) => {
+export const validateAccessToken = (token, callback, onError) => {
   try {
-    let token = localStorage.get(constants.ACCESS_TOKEN);
-    if(token === null) {
-      callback(false);
-      return;
-    }
     let headers = {[accessTokenHeader]: token};
     axios.post(baseEndpoint + "/refreshAccessToken", {}, {headers: headers})
       .then((res) => {
@@ -233,7 +245,7 @@ export const isLoggedIn = (callback, onError) => {
         }
       })
       .catch((error) => {
-        callback(false);
+        onError(error);
       });
   }
   catch(error) {

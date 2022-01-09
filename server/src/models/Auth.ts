@@ -113,7 +113,7 @@ class Auth {
     return jwt.sign({id: userId}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "30m"});
   }
 
-  static async validateRegistrationToken(verificationToken: string, email: string, next: Function) {
+  static async validateRegistrationToken(verificationToken: string, email: string): Promise<boolean> {
     try {
       if(!Auth.validateAccessToken(verificationToken) || Auth.decodeAccessToken(verificationToken) !== email) {
         throw new TokenInvalidError();
@@ -121,9 +121,10 @@ class Auth {
       if(await User.doesUserExist(email)) {
         throw new UserAlreadyExistsError();
       }
+      return true;
     }
     catch(error: any) {
-      next(error);
+      return false;
     }
   }
 }
