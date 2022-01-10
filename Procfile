@@ -1,1 +1,1 @@
-"web: cd ./server & npm run prod" 
+"web: npm start" 
