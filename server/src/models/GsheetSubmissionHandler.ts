@@ -33,6 +33,7 @@ class GsheetSubmissionHandler implements SubmissionHandler {
         return false;
       }
     }
+    config.gsheetId = config.gsheetId.trim();
     return true;
   }
 

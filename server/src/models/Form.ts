@@ -28,8 +28,7 @@ class Form {
     "id",
     "userId",
     "dateCreated",
-    "lastModified",
-    "submissions"
+    "lastModified"
   ];
 
   constructor() {
@@ -203,6 +202,11 @@ class Form {
           return {};
         }
       }
+      else if(key === "submissions") {
+        if(!this.validateSubmissions(fields.submissions)) {
+          return {};
+        }
+      }
       else if(this.protectedFields.includes(key)) {
         continue;
       }
@@ -212,6 +216,40 @@ class Form {
       updateBody[key] = fields[key];
     }
     return updateBody;
+  }
+
+  private validateSubmissions(submissions: json[]): boolean {
+    for(var i: number = 0; i < submissions.length; i++) {
+      let submission: json = submissions[i];
+      // validate submissionErrors
+      if(submission.submissionErrors === undefined || !Array.isArray(submission.submissionErrors)) {
+        return false;
+      }
+      for(var x: number = 0; x < submission.submissionErrors.length; x++) {
+        let submitError = submission.submissionErrors[x];
+        if(submitError.type === undefined || submitError.error === undefined) {
+          return false;
+        }
+        if(typeof submitError.type !== "string" || typeof submitError.error !== "string") {
+          return false;
+        }
+      }
+      // validate timestamp
+      if(submission.timestamp === undefined || typeof submission.timestamp !== "number") {
+        return false;
+      }
+      // validate data
+      for(var n: number = 0; n < submission.data.length; n++) {
+        let data = submission.data[n];
+        if(data.id === undefined || data.name === undefined || data.value === undefined) {
+          return false;
+        }
+        if(typeof data.id !== "string" || typeof data.name !== "string" || typeof data.value !== "string") {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   private validateElements(elements: json[]): boolean {

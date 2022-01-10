@@ -103,7 +103,7 @@ const ResetPassword = (props) => {
         <br/>
         <Row>
           <Col style={{textAlign: "center"}}>
-            Enter your email 
+            Enter your email
           </Col>
         </Row>
         <br/>
@@ -115,7 +115,6 @@ const ResetPassword = (props) => {
               type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter email"
             />
           </Col>
           <Col sm={3}>
@@ -130,7 +129,7 @@ const ResetPassword = (props) => {
               :
                 <span></span>
               }
-              Enter
+              Submit
             </Button>
           </Col>
         </Row>

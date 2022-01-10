@@ -1,6 +1,7 @@
 .env
+.dev_env
+google-credentials.json
 
 build
 dist
 node_modules
-firebase_key

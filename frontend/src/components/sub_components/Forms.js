@@ -33,8 +33,8 @@ const Forms = (props) => {
         <div>
           <Figure>
             <Figure.Image
-              width={500}
-              src="no_data.jpg"
+              width={400}
+              src="no_forms.jpg"
             />
           </Figure>
         </div>

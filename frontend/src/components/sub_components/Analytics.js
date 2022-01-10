@@ -10,7 +10,9 @@ import {
   Tab,
   Accordion,
   Badge,
-  Alert
+  Alert,
+  Button,
+  Spinner
 } from 'react-bootstrap';
 
 
@@ -18,17 +20,21 @@ import {
   Props:
     * form
     * show
+    * isLoading
+    * onChangeForm
     * onClose
+    * onSubmit
 */
 const Analytics = (props) => {
 
   const [show, setShow] = useState(false);
   const [form, setForm] = useState();
+  const [isSaved, setIsSaved] = useState(true);
 
   useEffect(() => {
-    setForm(props.form);
+    setAndSortSubmissions(props.form);
     setShow(props.show);
-  }, [props.form, props.show]);
+  }, [props.form, props.show, props.isLoading]);
 
   const getGraphData = () => {
     if(form === undefined || form === null) {
@@ -55,6 +61,32 @@ const Analytics = (props) => {
     return data;
   }
 
+  const setAndSortSubmissions = (formFromProps) => {
+    // sort descending
+    formFromProps.submissions.sort((a, b) => {
+      return b.timestamp - a.timestamp;
+    });
+    setForm(formFromProps);
+  }
+
+  const onClose = () => {
+    setIsSaved(true);
+    props.onClose();
+  }
+
+  const removeSubmission = (index) => {
+    let formCopy = JSON.parse(JSON.stringify(form));
+    formCopy.submissions.splice(index, 1);
+    setForm(formCopy);
+    setIsSaved(false);
+  }
+
+  const onSave = (e) => {
+    let formCopy = JSON.parse(JSON.stringify(form));
+    props.onChangeForm(formCopy);
+    props.onSubmit(e, onClose, formCopy);
+  }
+
   const getDateTimeString = (timestamp) => {
     let date = new Date(timestamp);
     return date.toLocaleDateString() + " at " + date.toLocaleTimeString();
@@ -66,7 +98,7 @@ const Analytics = (props) => {
     );
   }
   return (
-    <Modal show={show} onHide={props.onClose} size="xl">
+    <Modal show={show} onHide={onClose} size="xl">
       <Modal.Header closeButton>
         <Modal.Title>
           Form Analytics
@@ -137,9 +169,8 @@ const Analytics = (props) => {
                                   </div>
                                 );
                               })}
-                              <div style={{height:"8px"}}></div>
                               {submission.submissionErrors.length > 0 ?
-                                <Alert variant="danger">
+                                <Alert variant="danger" style={{marginTop: "8px"}}>
                                   <strong> Submission Errors: </strong>
                                   {submission.submissionErrors.map((err, errIndex) => {
                                     return (
@@ -150,6 +181,11 @@ const Analytics = (props) => {
                               :
                                 <span></span>
                               }
+                              <div style={{textAlign: "right"}}>
+                                <Button variant="outline-dark" onClick={() => removeSubmission(index)}>
+                                  🗑️
+                                </Button>
+                              </div>
                             </Accordion.Body>
                           </Accordion.Item>
                         );
@@ -161,6 +197,15 @@ const Analytics = (props) => {
                 <br/>
               </div>
             }
+            <br/>
+            <Button style={{float: "right"}} variant="success" disabled={isSaved || props.isLoading} onClick={(e) => {onSave(e)}}>
+              {props.isLoading ?
+                <Spinner as="span" size="sm" animation="border" style={{marginRight: "8px"}}/>
+              :
+                <span></span>
+              }
+              Save
+            </Button>
           </Tab>
         </Tabs>
       </Modal.Body>

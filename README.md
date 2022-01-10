@@ -8,7 +8,7 @@ Create and host forms without writing any code. Form submissions can be configur
 ## Changelog
 
 ### 1/6/2022
-<b> Tags: </b> `Release`
+<b> Labels: </b> `Release`
 
 Initial release. Includes basic functionality of the application which allows users to:
 - Build forms

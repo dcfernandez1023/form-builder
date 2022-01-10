@@ -223,7 +223,10 @@ const FormBuilder = (props) => {
       <Analytics
         form={form}
         show={showAnalytics}
+        isLoading={isSaving}
+        onChangeForm={onChangeForm}
         onClose={() => {setShowAnalytics(false)}}
+        onSubmit={saveForm}
       />
       <CustomModal
         form={form}

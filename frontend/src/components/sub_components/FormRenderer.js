@@ -143,10 +143,10 @@ const FormRenderer = (props) => {
           {form.elements.length == 0 && props.mode === "building" ?
             <Row>
               <Col style={{textAlign: "center"}}>
-                <p> No elements have been added </p>
+                <p> No form elements have been added </p>
                 <Figure>
                   <Figure.Image
-                    width={500}
+                    width={450}
                     src="/no_elements_white.png"
                   />
                 </Figure>

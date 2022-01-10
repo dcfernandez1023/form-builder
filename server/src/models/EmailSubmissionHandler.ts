@@ -33,6 +33,7 @@ class EmailSubmissionHandler implements SubmissionHandler {
         return false;
       }
     }
+    config.receivers = config.receivers.trim();
     return true;
   }
 

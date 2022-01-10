@@ -21,15 +21,20 @@ app.use(express.json());
 // api routes
 app.use("/api", apiRouter.routes);
 
-// server static frontend files
-app.use(express.static(path.resolve("./") + "../../../frontend/build"));
+// serve static frontend files
+let frontendDir: string = process.env.FRONTEND_DIR ?? "";
+console.log("Front-end Dir: " + frontendDir);
+app.use(express.static(frontendDir));
 app.get('*', (req,res) =>{
-  res.sendFile(path.resolve("../../frontend/build/index.html"));
+  res.sendFile(path.resolve(frontendDir + "/index.html"));
 });
+// app.use(express.static(path.resolve("./") + "../../frontend/build"));
+// app.get('*', (req,res) =>{
+//   res.sendFile(path.resolve("../frontend/build/index.html"));
+// });
 
 // catch errors
 app.use((error: any, req: any, res: any, next: Function): any | void => {
-  console.error(error);
   if (error.statusCode) {
     return res.status(error.statusCode).json({
       message: error.message

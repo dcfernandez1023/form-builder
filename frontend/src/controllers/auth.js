@@ -146,7 +146,7 @@ export const resetPassword = (email, newPassword, callback, onError, verificatio
   Logs the user out
 */
 export const logout = () => {
-  storeAccessToken("");
+  clearAccessToken();
   window.location.href = "/";
 }
 
@@ -181,6 +181,10 @@ export const login = (email, password, callback, onError) => {
 */
 export const storeAccessToken = (token) => {
   localStorage.set(constants.ACCESS_TOKEN, token);
+}
+
+export const clearAccessToken = () => {
+  localStorage.remove(constants.ACCESS_TOKEN);
 }
 
 /**

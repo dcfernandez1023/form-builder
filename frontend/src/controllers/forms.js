@@ -83,6 +83,18 @@ export const updateForm = (formId, form, callback, onError) => {
       return;
     }
     let headers = {[accessTokenHeader]: token};
+    // form.submissions.push(
+    //   {
+    //     timestamp: 0,
+    //     submissionErrors: [
+    //       {error: 0, type: "test"}
+    //     ],
+    //     data: [
+    //       {id: "test", name: "test", value: "test"},
+    //       {id: "test", name: "test", value: "test"}
+    //     ]
+    //   }
+    // );
     axios.post(baseEndpoint + "/updateFields/" + formId, {fields: form}, {headers: headers})
       .then((res) => {
         if(res.status == 200) {

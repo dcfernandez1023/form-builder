@@ -15,3 +15,7 @@ export const get = (key) => {
   }
   return window.localStorage.getItem(key.toString());
 }
+
+export const remove = (key) => {
+  window.localStorage.removeItem(key);
+}

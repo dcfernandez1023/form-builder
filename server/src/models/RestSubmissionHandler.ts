@@ -33,6 +33,7 @@ class RestSubmissionHandler implements SubmissionHandler {
         return false;
       }
     }
+    config.endpoint = config.endpoint.trim();
     return true;
   }
 

@@ -224,8 +224,8 @@ const Login = (props) => {
         <Col sm={6} style={{textAlign: "center"}}>
           <Figure>
             <Figure.Image
-              width={500}
-              src="form_landing.jpg"
+              width={575}
+              src="/landing_image.jpg"
             />
           </Figure>
         </Col>

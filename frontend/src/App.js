@@ -121,7 +121,7 @@ function App() {
               </span>
               {pipe}
               <span>
-                <a style={{textDecoration: "none"}} href="#" target="_blank">Submit Feedback ✏️</a>
+                <a style={{textDecoration: "none"}} href="http://localhost:5000/form/91badde3-9070-401a-b8d1-e591cdd80d0a" target="_blank">Submit Feedback ✏️</a>
               </span>
             </Col>
           </Row>
