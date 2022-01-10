@@ -21,7 +21,7 @@ jobs:
         run: cd ./server && npm install
 
       - name: Build
-        run: CI=false cd ./server && npm run build-all
+        run: CI=false && cd ./server && npm run build-all
 
       - name: Deploy to Heroku
         uses: akhileshns/heroku-deploy@v3.12.12
