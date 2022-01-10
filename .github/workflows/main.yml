@@ -29,5 +29,4 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "simple-forms"
           heroku_email: "dominic.fernandez1023@gmail.com"
-          appdir: "server"
           buildpack: "https://github.com/heroku/heroku-buildpack-nodejs.git"
