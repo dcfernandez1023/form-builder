@@ -1,3 +1,5 @@
-"scripts": {
-  "start": "cd ./server/dist && node index.js"
+{
+  "scripts": {
+    "start": "cd ./server/dist && node index.js"
+  }
 }
