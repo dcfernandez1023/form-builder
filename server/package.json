@@ -11,7 +11,7 @@
     "start-prod": "cd dist && node index.js ../../../.env prod",
     "build-prod": "npm install -g typescript && npm run build-all",
     "install-all": "cd ../frontend && echo INSTALLING FRONTEND DEPENDENCIES && npm install && cd ../server && echo INSTALLING BACKEND DEPENDENCIES && npm install",
-    "build-all": "cd ../frontend && echo BUILDING REACT FRONTEND && npm install && npm run build && cd ../server && echo BUILDING EXPRESS BACKEND && npm install && npm run build",
+    "build-all": "cd ../frontend && echo BUILDING REACT FRONTEND && npm install && npm run build && cd ../server && echo BUILDING EXPRESS BACKEND && npm install && npm i --save-dev @types/uuid && npm i --save-dev @types/google-spreadsheet && npm run build",
     "build-and-run-all": "npm run build-all && cd dist && node index.js ../../../.env prod"
   },
   "keywords": [],
@@ -26,8 +26,6 @@
     "typescript": "^4.5.4"
   },
   "dependencies": {
-    "@types/google-spreadsheet": "^3.1.5",
-    "@types/uuid": "^8.3.4",
     "axios": "^0.24.0",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
