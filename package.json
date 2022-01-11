@@ -2,8 +2,8 @@
   "scripts": {
     "tsc": "tsc",
     "start": "cd ./server && npm run start-prod",
-    "postinstall": "cd ./server && npm run build-all",
-    "deploy": "git add . && git commit -m Heroku && git push heroku master"
+    "postinstall": "cd ./server && npm run build-prod",
+    "deploy": "node initHerokuEnvironment.js && git add . && git commit -m Heroku && git push heroku master"
   },
   "engines": { "node": "16.13.1" }
 }
