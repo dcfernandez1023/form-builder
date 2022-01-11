@@ -8,6 +8,7 @@
     "dev": "ts-node index.ts ../../.dev_env dev",
     "build": "tsc",
     "prod": "npm run build && cd dist && node index.js ../../../.env prod",
+    "start-prod": "cd dist && node index.js ../../../.env prod",
     "install-all": "cd ../frontend && echo INSTALLING FRONTEND DEPENDENCIES && npm install && cd ../server && echo INSTALLING BACKEND DEPENDENCIES && npm install",
     "build-all": "cd ../frontend && echo BUILDING REACT FRONTEND && npm install && npm run build && cd ../server && echo BUILDING EXPRESS BACKEND && npm install && npm run build",
     "build-and-run-all": "npm run build-all && cd dist && node index.js ../../../.env prod"
