@@ -13,10 +13,7 @@ const main = () => {
         throw new Error("Invalid env variable");
       }
       let doubleQuotedEnv = env.slice(0, equalsIndex+1) + '"' + env.slice(equalsIndex+1) + '"';
-      console.log(doubleQuotedEnv);
-      continue;
       let cmd = herokuSetCmd + doubleQuotedEnv;
-      console.log(cmd);
       exec(cmd, (error, stdout, stderr) => {
           if (error) {
               console.log(`error: ${error.message}`);
