@@ -25,7 +25,6 @@ const main = () => {
   let envPath = __dirname + process.argv[2];
   require('dotenv').config({path: envPath});
   initGoogleCreds(process.argv[3]);
-  console.log(process.env.FRONTEND_DIR);
   const server = require("./src/server");
   const port = process.env.PORT || 5000;
   server.startServer(port);
