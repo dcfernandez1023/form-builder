@@ -24,6 +24,7 @@ import FormBuilder from "./components/FormBuilder";
 import PublishedForm from "./components/sub_components/PublishedForm";
 import AccountSettings from "./components/sub_components/AccountSettings";
 
+const CONSTANTS = require("./controllers/constants");
 const AUTH = require("./controllers/auth");
 
 
@@ -121,7 +122,7 @@ function App() {
               </span>
               {pipe}
               <span>
-                <a style={{textDecoration: "none"}} href="http://localhost:5000/form/91badde3-9070-401a-b8d1-e591cdd80d0a" target="_blank">Submit Feedback ✏️</a>
+                <a style={{textDecoration: "none"}} href={process.env.REACT_APP_SERVER_ENVIRONMENT === "prod" ? CONSTANTS.SERVER_API_URL + "/form/91badde3-9070-401a-b8d1-e591cdd80d0a" : "http://localhost:5000/form/91badde3-9070-401a-b8d1-e591cdd80d0a"} target="_blank">Submit Feedback ✏️</a>
               </span>
             </Col>
           </Row>

@@ -7,7 +7,7 @@ Create and host forms without writing any code. Form submissions can be configur
 
 ## Changelog
 
-### 1/6/2022
+### 1/12/2022
 <b> Labels: </b> `Release`
 
 Initial release. Includes basic functionality of the application which allows users to:
@@ -18,9 +18,18 @@ Initial release. Includes basic functionality of the application which allows us
 <hr>
 
 ## Usage
-- To only install packages for both the frontend and backend, navigate to /server and run `npm run install-all`
-- To build both the frontend and backend, navigate to /server and run `npm run build-all`
-- To build and run both the frontend and backend simultaneously, navigate to /server and run `npm run build-and-run-all`
+
+### Local
+- To run the React server and Express server simultaneously, open two
+separate terminals and run `npm run dev` in the `/server` directory of one terminal, and run `npm run start` in the `/frontend` directory of the other terminal.
+- To run only the Express server and have the React app served statically, ensure that the React code is built by navigating to `/frontend` and running `npm run build`, and then navigate to `/server` and run `npm run prod` to build and start the Express server in production mode.
+- To build both the frontend and backend, navigate to `/server` and run `npm run build-all`
+- To build and run both the frontend and backend simultaneously, navigate to `/server` and run `npm run build-and-run-all`
+
+### Production
+This project is deploys to Heroku. The Heroku CLI is used to deploy
+changes made to production code. Use `npm run deploy` to automatically
+build and push the production code to Heroku.
 <hr>
 
 ## Noteworthy Packages/Dependencies

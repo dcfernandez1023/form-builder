@@ -1,4 +1,4 @@
-console.log(process.env.REACT_APP_SERVER_ENVIRONMENT);
+console.log("Server env: " + process.env.REACT_APP_SERVER_ENVIRONMENT);
 
 export const ACCESS_TOKEN = "ACCESS_TOKEN";
 export const ACCESS_TOKEN_HEADER = "access-token";
