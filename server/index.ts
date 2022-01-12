@@ -1,6 +1,5 @@
 const fs = require('fs');
 
-
 const initGoogleCreds = (environment: string) => {
   try {
     fs.writeFileSync(
