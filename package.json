@@ -6,7 +6,7 @@
     "deploy": "node initHerokuEnvironment.js && git add . && git commit -m Heroku && git push heroku master"
   },
   "engines": {
-    "node": "16.13.1",
-    "npm": "8.3.0"
+    "node": "16.x",
+    "npm": "8.x"
   }
 }
