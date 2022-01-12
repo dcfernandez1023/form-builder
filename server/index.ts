@@ -2,7 +2,8 @@ const fs = require('fs');
 
 const initGoogleCreds = (environment: string) => {
   try {
-    console.log(JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON));
+    let google_creds: string = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON ?? "{}";
+    console.log(JSON.parse(google_creds));
     fs.writeFileSync(
       environment === "dev" ? "./firebase_key/google-credentials.json" : "../firebase_key/google-credentials.json",
       process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON
