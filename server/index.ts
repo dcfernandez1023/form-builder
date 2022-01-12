@@ -13,6 +13,7 @@ const initGoogleCreds = (environment: string) => {
 }
 
 const main = () => {
+  console.log("## INITIALIZING EXPRESS SERVER ##");
   if(process.argv.length != 4) {
     console.log("Usage: ");
     console.log("\t* Typescript: ts-node index.ts <relative-path-to-.env> <environment>");
