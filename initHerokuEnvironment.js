@@ -12,7 +12,7 @@ const main = () => {
       if(equalsIndex == -1 || equalsIndex+1 == env.length) {
         throw new Error("Invalid env variable");
       }
-      let doubleQuotedEnv = env.slice(0, equalsIndex+1) + '"' + nv.slice(equalsIndex+1) + '"';
+      let doubleQuotedEnv = env.slice(0, equalsIndex+1) + '"' + env.slice(equalsIndex+1) + '"';
       exec(herokuSetCmd + envs[i] + '"', (error, stdout, stderr) => {
           if (error) {
               console.log(`error: ${error.message}`);
