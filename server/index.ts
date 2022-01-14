@@ -23,7 +23,6 @@ const main = () => {
   }
   let envPath = __dirname + process.argv[2];
   require('dotenv').config({path: envPath});
-  console.log(process.env.SERVICE_EMAIL_PASSWORD);
   initGoogleCreds(process.argv[3]);
   const server = require("./src/server");
   const port = process.env.PORT || 5000;
