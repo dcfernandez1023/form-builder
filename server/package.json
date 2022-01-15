@@ -13,7 +13,7 @@
     "install-all": "cd ../frontend && echo INSTALLING FRONTEND DEPENDENCIES && npm install && cd ../server && echo INSTALLING BACKEND DEPENDENCIES && npm install",
     "build-all": "cd ../frontend && echo BUILDING REACT FRONTEND && npm install && npm run build && cd ../server && echo BUILDING EXPRESS BACKEND && npm install && npm ls --depth=0 && npm run build",
     "build-and-run-all": "npm run build-all && cd dist && node index.js ../../../.env prod",
-    "test": "mocha -r ts-node/register test/**/test.ts"
+    "test": "mocha --timeout 5000 -r ts-node/register -r dotenv/config tests/**/*.ts"
   },
   "keywords": [],
   "author": "",
