@@ -1,12 +1,23 @@
 {
-  "scripts": {
-    "tsc": "tsc",
-    "start": "cd ./server && npm run start-prod",
-    "postinstall": "cd ./server && npm run build-prod",
-    "deploy": "git add . && git commit -m Heroku && git push heroku master"
+  "devDependencies": {
+    "@types/chai": "^4.3.0",
+    "@types/mocha": "^9.0.0",
+    "chai": "^4.3.4",
+    "mocha": "^9.1.4",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.4"
   },
-  "engines": {
-    "node": "16.x",
-    "npm": "8.x"
+  "dependencies": {
+    "@types/uuid": "^8.3.4",
+    "dotenv": "^14.1.0",
+    "firebase-admin": "^10.0.1",
+    "uuid": "^8.3.2"
+  },
+  "scripts": {
+    "start": "ts-node index.ts",
+    "build": "tsc",
+    "build-all-windows": "npm install && npm run build && cd ./frontend && npm install && npm run build-windows",
+    "build-all-linux": "npm install && npm run build && cd ./frontend && npm install && npm run build-linux",
+    "test": "mocha --timeout 5000 -r ts-node/register -r dotenv/config tests/**/*.ts"
   }
 }
