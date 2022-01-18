@@ -42,6 +42,7 @@ class UserDao extends Dao {
         db.insert(queryStr);
         return user;
     }
+
     public async get(id: string): Promise<User> {
         let query: firestoreQueryObj = QueryHelper.getQueryObj();
         query.identifier = id;
@@ -58,6 +59,7 @@ class UserDao extends Dao {
         let userJson: json = result[0];
         return User.fromJson(userJson);
     }
+
     public async update(id: string, data: json): Promise<User> {
         // Load User model with data to ensure data is valid
         let user: User = User.fromJson(data);
@@ -74,6 +76,7 @@ class UserDao extends Dao {
         await db.update(queryStr);
         return user;
     }
+
     public async delete(id: string): Promise<string> {
         let query: firestoreQueryObj = QueryHelper.getQueryObj();
         query.identifier = id;
@@ -86,6 +89,7 @@ class UserDao extends Dao {
         // Delete User credentials
         return await db.delete(queryStr);
     }
+
     public async login(email: string, password: string): Promise<boolean> {
         let userId: string | null = await this.getUserIdByEmail(email);
         if(userId === null) {
@@ -107,12 +111,24 @@ class UserDao extends Dao {
         return await AuthService.validatePassword(cred.password, password);
     }
 
-
-    protected initDataAccess(): void {
-        super.db = db;
+    public async changePassword(email: string, newPassword: string): Promise<void> {
+        let hashedPassword: string = await AuthService.hashPassword(newPassword);
+        let userId: string | null = await this.getUserIdByEmail(email);
+        if(userId === null) {
+            throw new Error("No user with email: " + email);
+        }
+        let query: firestoreQueryObj = QueryHelper.getQueryObj();
+        query.identifier = userId;
+        query.collection = UserDao.CRED_COLLECTION;
+        query.filterKeys = ["id"];
+        query.filterConditions = ["=="];
+        query.filterValues = [userId];
+        query.record = {password: hashedPassword};
+        let queryStr: string = JSON.stringify(query);
+        await db.update(queryStr);
     }
 
-    private async getUserIdByEmail(email: string): Promise<string | null> {
+    public async getUserIdByEmail(email: string): Promise<string | null> {
         let query: firestoreQueryObj = QueryHelper.getQueryObj();
         query.collection = UserDao.USER_COLLECTION;
         query.filterKeys = ["email"];
@@ -121,6 +137,10 @@ class UserDao extends Dao {
         let queryStr: string = JSON.stringify(query);
         let userData: json[] = await db.get(queryStr);
         return userData.length == 1 ? userData[0].id : null;
+    }
+
+    protected initDataAccess(): void {
+        super.db = db;
     }
 
 }

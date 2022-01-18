@@ -6,9 +6,11 @@ class AuthService {
     public static async hashPassword(plainTextPwd: string): Promise<string> {
         return await bcrypt.hash(plainTextPwd, 10);
     }
+
     public static async validatePassword(expected: string, actual: string): Promise<boolean> {
         return await bcrypt.compare(actual, expected);
     }
+
     public static decodeAccessToken(accessToken: string): string {
         try {
             var ca: string = accessToken;
@@ -20,6 +22,7 @@ class AuthService {
             return "";
         }
     }
+
     public static validateAccessToken(accessToken: string): boolean {
         try {
           return jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
@@ -27,7 +30,8 @@ class AuthService {
         catch(error: any) {
           return false;
         }
-    }   
+    } 
+      
     public static generateAccessToken(userId: string): string {
         return jwt.sign({id: userId}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "30m"});
     }

@@ -79,6 +79,30 @@ describe(USER_DAO_TEST, () => {
 });
 
 describe(USER_DAO_TEST, () => {
+    describe('#changePassowrd', () => {
+        it("Should change password", async () => {
+            await USER_DAO.changePassword("dom22c@gmail.com", "test");
+            assert(true);
+        });
+    });
+});
+
+describe(USER_DAO_TEST, () => {
+    describe('#changePassowrd', () => {
+        it("Should fail to change password because user does not exist", async () => {
+            try {
+                await USER_DAO.changePassword("notAUser@gmail.com", "test");
+                assert(false);
+            }
+            catch(error: any) {
+                const errorFunc = () => {throw(error)};
+                assert.throws(errorFunc, Error);
+            }
+        });
+    });
+});
+
+describe(USER_DAO_TEST, () => {
     describe('#delete', () => {
         it("Should delete the new User object", async () => {
             let deletedId: string = await USER_DAO.delete(USER.getId());

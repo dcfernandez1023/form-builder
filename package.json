@@ -13,6 +13,7 @@
     "dotenv": "^14.1.0",
     "firebase-admin": "^10.0.1",
     "jsonwebtoken": "^8.5.1",
+    "nodemailer": "^6.7.2",
     "uuid": "^8.3.2"
   },
   "scripts": {
@@ -20,6 +21,7 @@
     "build": "tsc",
     "build-all-windows": "npm install && npm run build && cd ./frontend && npm install && npm run build-windows",
     "build-all-linux": "npm install && npm run build && cd ./frontend && npm install && npm run build-linux",
-    "test": "mocha --timeout 5000 -r ts-node/register -r dotenv/config tests/**/*.ts"
+    "test": "mocha --timeout 5000 -r ts-node/register -r dotenv/config tests/**/*.ts",
+    "test-one": "mocha --timeout 5000 -r ts-node/register -r dotenv/config"
   }
 }

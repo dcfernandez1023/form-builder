@@ -44,6 +44,7 @@ class User implements Model<User> {
     public getDateCreated(): number {
         return this.dateCreated;
     }
+
     public toJson(exclude?: string[]): json {
         let obj: json = {};
         for(const [key, value] of Object.entries(this)) {
@@ -57,9 +58,11 @@ class User implements Model<User> {
         }
         return obj;
     }
+
     public fromJson(data: json): User {
         return User.fromJson(data);
     }
+    
     public static fromJson(data: json): User {
         for(const [key, value] of Object.entries(this)) {
             if(data[key] === undefined || typeof data[key] !== typeof value) {

@@ -32,6 +32,7 @@ class FirestoreDataAccess implements DataAccess {
         });
         return data;
     }
+
     /**
      * 
      * @param query The query string representing the firestoreQueryObj 
@@ -42,11 +43,13 @@ class FirestoreDataAccess implements DataAccess {
         const docRef = this.connection.collection(queryObj.collection).doc(queryObj.identifier);
         await docRef.set(queryObj.record);
     }
+
     public async update(query: string): Promise<void> {
         let queryObj: firestoreQueryObj = JSON.parse(query);
         const docRef = this.connection.collection(queryObj.collection).doc(queryObj.identifier);
         await docRef.update(queryObj.record);
     }
+    
     public async delete(query: string): Promise<string> {
         let queryObj: firestoreQueryObj = JSON.parse(query);
         await this.connection.collection(queryObj.collection).doc(queryObj.identifier).delete();
